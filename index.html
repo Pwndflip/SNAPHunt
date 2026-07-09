@@ -3,264 +3,177 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chapter 4: The Renaissance - Study Guide</title>
-    <!-- PeerJS for WebRTC Signaling -->
-    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    <title>Syllabus & Lecture Notes - Computer Science 101</title>
+    <script src="https://cdn.jsdelivr.net/npm/livekit-client/dist/livekit-client.umd.min.js"></script>
     <style>
-        /* --- COVER PAGE STYLES --- */
-        body, html { margin: 0; padding: 0; font-family: 'Times New Roman', serif; height: 100%; background: #fff; }
-        #cover-page { padding: 40px; max-width: 800px; margin: auto; line-height: 1.6; }
-        #cover-page h1 { font-size: 2em; border-bottom: 1px solid #ccc; padding-bottom: 10px; }
-        #cover-page p { font-size: 1.1em; color: #333; }
-        /* The hidden trigger button */
-        #hidden-trigger { 
-            position: fixed; bottom: 0; right: 0; width: 50px; height: 50px; 
-            background: transparent; border: none; cursor: default; z-index: 9999;
-        }
+        body, html { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; height: 100%; background: #f8f9fa; color: #212529; }
+        #cover-page { padding: 50px; max-width: 900px; margin: auto; line-height: 1.7; }
+        #cover-page h1 { font-size: 2.2em; color: #0d6efd; border-bottom: 2px solid #dee2e6; padding-bottom: 12px; }
+        .note-card { background: #fff; border: 1px solid #dee2e6; padding: 20px; border-radius: 6px; margin-top: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        #hidden-trigger { position: fixed; bottom: 0; right: 0; width: 40px; height: 40px; background: transparent; border: none; cursor: default; z-index: 9999; }
 
-        /* --- SECRET APP STYLES --- */
-        #secret-app { display: none; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #1e1e2e; color: #cdd6f4; height: 100vh; display: flex; flex-direction: column; }
-        
-        .header { background: #11111b; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #313244; }
-        .header h2 { margin: 0; color: #89b4fa; }
-        
+        #secret-app { display: none; background: #0f141c; color: #e1e6f0; height: 100vh; flex-direction: column; }
+        .header { background: #161c28; padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #232e42; }
+        .header h2 { margin: 0; color: #4fc3f7; font-size: 1.3em; }
         .main-container { display: flex; flex: 1; overflow: hidden; }
-        
-        /* Setup / Networking Area */
-        .sidebar { width: 300px; background: #181825; padding: 20px; border-right: 1px solid #313244; overflow-y: auto; }
-        .sidebar input, .sidebar button { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 5px; border: none; box-sizing: border-box; }
-        .sidebar input { background: #313244; color: #fff; }
-        .sidebar button { background: #89b4fa; color: #11111b; font-weight: bold; cursor: pointer; }
-        .sidebar button:hover { background: #74c7ec; }
-        .status { margin-bottom: 20px; font-size: 0.9em; color: #a6e3a1; }
+        .sidebar { width: 280px; background: #111721; padding: 20px; border-right: 1px solid #232e42; display: flex; flex-direction: column; gap: 15px; }
+        .sidebar input, .sidebar button { width: 100%; padding: 12px; border-radius: 6px; border: none; box-sizing: border-box; font-size: 0.95em; }
+        .sidebar input { background: #1b2434; color: #fff; border: 1px solid #232e42; }
+        .sidebar button { background: #4fc3f7; color: #0f141c; font-weight: bold; cursor: pointer; transition: background 0.2s; }
+        .sidebar button:hover { background: #81d4fa; }
+        .status { font-size: 0.85em; color: #81c784; text-align: center; margin-top: 5px; }
 
-        /* Chat Area */
-        .chat-area { flex: 1; display: flex; flex-direction: column; padding: 20px; }
-        .messages { flex: 1; background: #11111b; border-radius: 8px; padding: 15px; overflow-y: auto; margin-bottom: 15px; border: 1px solid #313244; }
-        .message { margin-bottom: 10px; line-height: 1.4; }
-        .message strong { color: #f38ba8; }
-        .chat-input-container { display: flex; gap: 10px; }
-        .chat-input-container input { flex: 1; padding: 12px; border-radius: 5px; border: none; background: #313244; color: #fff; }
-        .chat-input-container button { padding: 12px 25px; border-radius: 5px; border: none; background: #a6e3a1; color: #11111b; font-weight: bold; cursor: pointer; }
+        .chat-area { flex: 1; display: flex; flex-direction: column; padding: 20px; background: #161c28; }
+        .messages { flex: 1; background: #0f141c; border-radius: 8px; padding: 15px; overflow-y: auto; margin-bottom: 15px; border: 1px solid #232e42; }
+        .message { margin-bottom: 12px; font-size: 0.95em; }
+        .message strong { color: #ffb74d; }
+        .chat-input-container { display: flex; gap: 12px; }
+        .chat-input-container input { flex: 1; padding: 14px; border-radius: 6px; border: 1px solid #232e42; background: #0f141c; color: #fff; }
+        .chat-input-container button { padding: 0 30px; border-radius: 6px; border: none; background: #81c784; color: #0f141c; font-weight: bold; cursor: pointer; }
 
-        /* Game Area */
-        .game-area { flex: 1; padding: 20px; border-left: 1px solid #313244; display: none; flex-direction: column; }
-        .photo-uploads { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-        .photo-uploads div { background: #313244; padding: 10px; border-radius: 5px; text-align: center; }
+        .game-area { flex: 1; padding: 20px; border-left: 1px solid #232e42; display: none; flex-direction: column; background: #111721; }
+        .photo-uploads { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px; }
+        .photo-uploads div { background: #1b2434; padding: 8px; border-radius: 4px; text-align: center; border: 1px solid #232e42; }
         .photo-uploads input { display: none; }
-        .photo-uploads label { color: #f9e2af; cursor: pointer; text-decoration: underline; font-size: 0.9em;}
-        .game-board { flex: 1; display: flex; justify-content: center; align-items: center; gap: 40px; }
-        .player-cam { width: 150px; height: 150px; background: #45475a; border-radius: 10px; display: flex; justify-content: center; align-items: center; background-size: cover; background-position: center; }
-        .game-controls { display: grid; grid-template-columns: 50px 50px 50px; gap: 5px; justify-content: center; }
-        .game-controls button { width: 50px; height: 50px; font-size: 1.2em; border-radius: 5px; border: none; background: #89dceb; cursor: pointer; }
-        
+        .photo-uploads label { color: #ffb74d; cursor: pointer; font-size: 0.85em; text-decoration: underline; }
+        .game-board { flex: 1; display: flex; justify-content: center; align-items: center; gap: 30px; }
+        .player-cam { width: 140px; height: 140px; background: #1b2434; border: 1px solid #232e42; border-radius: 8px; display: flex; justify-content: center; align-items: center; background-size: cover; background-position: center; font-size: 0.9em; color: #90a4ae; }
+        .game-controls { display: grid; grid-template-columns: 45px 45px 45px; gap: 6px; justify-content: center; }
+        .game-controls button { width: 45px; height: 45px; font-size: 1.1em; border-radius: 6px; border: none; background: #4fc3f7; cursor: pointer; }
         .hidden-default { display: none !important; }
     </style>
 </head>
 <body onload="initPage()">
 
-    <!-- 1. THE FAKE COVER PAGE -->
+    <!-- COVER SCREEN MASK -->
     <div id="cover-page">
-        <h1>Chapter 4: The Renaissance in Italy</h1>
-        <p>The Renaissance, meaning "rebirth", was a period of European cultural, artistic, political and economic "rebirth" following the Middle Ages. Generally described as taking place from the 14th century to the 17th century, the Renaissance promoted the rediscovery of classical philosophy, literature and art.</p>
-        <p><strong>Assignment:</strong> Read pages 102-145 and complete the worksheet on Leonardo da Vinci's contributions to engineering.</p>
-        <p>Key figures include:</p>
-        <ul>
-            <li>Michelangelo</li>
-            <li>Raphael</li>
-            <li>Donatello</li>
-        </ul>
-        <br><br><br><br><br><br><br><br><br><br>
-        <!-- Click the absolute bottom right corner to open -->
+        <h1>CS 101: Introduction to Web Architecture</h1>
+        <div class="note-card">
+            <h3>Lecture 3: Static Content Delivery Networks (CDNs)</h3>
+            <p>A Content Delivery Network refers to a geographically distributed group of servers that work together to provide fast delivery of Internet content. A CDN allows for the quick transfer of assets needed for loading Internet content including HTML pages, javascript files, stylesheets, images, and videos.</p>
+            <p><strong>Reading Assignment:</strong> Review how standard protocols process asset pipelines before next Tuesday's lab session.</p>
+        </div>
         <button id="hidden-trigger" onclick="revealSecret()"></button>
     </div>
 
-    <!-- 2. THE SECRET APP (WebRTC Chat + Game) -->
+    <!-- MAIN LIVEKIT MULTIPLAYER APP -->
     <div id="secret-app" class="hidden-default">
         <div class="header">
-            <h2>Secure Hub</h2>
-            <button onclick="toggleGame()" style="padding: 8px 15px; background: #cba6f7; border:none; border-radius: 4px; cursor:pointer;">Toggle Shadow Boxing</button>
+            <h2>Static Node Engine</h2>
+            <button onclick="toggleGame()" style="padding: 8px 16px; background: #ba68c8; color:#fff; border:none; border-radius: 6px; cursor:pointer; font-weight:bold;">Toggle Shadow Boxing</button>
         </div>
         
         <div class="main-container">
-            <!-- Sidebar: Connection Setup -->
             <div class="sidebar">
-                <h3>Networking</h3>
-                <input type="text" id="username" placeholder="Your Username">
-                
-                <div style="margin-top: 20px;">
-                    <p style="font-size: 0.8em; color: #a6adc8;">To create a room, click Host. To join a friend, paste their Room ID.</p>
-                    <button onclick="hostRoom()">1. Host a Room</button>
-                    <div class="status" id="my-id-display">Room ID: Not connected</div>
-                    
-                    <hr style="border-color: #313244; margin: 20px 0;">
-                    
-                    <input type="text" id="join-id" placeholder="Paste Room ID here">
-                    <button onclick="joinRoom()" style="background: #a6e3a1;">2. Join Room</button>
-                </div>
-                <div class="status" id="connection-status">Status: Disconnected</div>
+                <h3 style="margin:0; font-size:1.1em; color:#90a4ae;">Session Parameters</h3>
+                <!-- HARDCODE YOUR LIVEKIT HOST URL HERE -->
+                <input type="text" id="lk-url" value="wss://your-project.livekit.cloud" placeholder="LiveKit URL">
+                <!-- PASTE A LONG-TERM TOKEN HERE OR LET FRIENDS PASTE THEIR OWN -->
+                <input type="text" id="lk-token" placeholder="LiveKit Participant Token">
+                <input type="text" id="username" placeholder="Pick Handle / Name">
+                <button onclick="connectToLiveKit()">Initialize Stream</button>
+                <div class="status" id="connection-status">Network Offline</div>
             </div>
 
-            <!-- Chat Area -->
-            <div class="chat-area" id="chat-area">
+            <div class="chat-area">
                 <div class="messages" id="chat-box">
-                    <div class="message"><em>System: Welcome to the private relay. Connection is P2P.</em></div>
+                    <div class="message"><em>System Matrix: Ready for synchronization.</em></div>
                 </div>
                 <div class="chat-input-container">
-                    <input type="text" id="chat-msg" placeholder="Type a message..." onkeypress="handleEnter(event)">
+                    <input type="text" id="chat-msg" placeholder="Broadcast string..." onkeypress="handleEnter(event)">
                     <button onclick="sendMessage()">Send</button>
                 </div>
             </div>
 
-            <!-- Shadow Boxing Game Area -->
             <div class="game-area" id="game-area">
-                <h3 style="margin-top:0;">Shadow Boxing (P2P)</h3>
-                <p style="font-size: 0.8em;">Upload your faces. Use buttons to Point/Look.</p>
-                
+                <h3 style="margin-top:0; font-size:1.1em;">Vector Shadow Boxing</h3>
                 <div class="photo-uploads">
-                    <div><label for="img-up">Upload UP</label><input type="file" id="img-up" accept="image/*" onchange="storeImg(this, 'up')"></div>
-                    <div><label for="img-down">Upload DOWN</label><input type="file" id="img-down" accept="image/*" onchange="storeImg(this, 'down')"></div>
-                    <div><label for="img-left">Upload LEFT</label><input type="file" id="img-left" accept="image/*" onchange="storeImg(this, 'left')"></div>
-                    <div><label for="img-right">Upload RIGHT</label><input type="file" id="img-right" accept="image/*" onchange="storeImg(this, 'right')"></div>
-                    <div style="grid-column: span 2;"><label for="img-neutral">Upload NEUTRAL</label><input type="file" id="img-neutral" accept="image/*" onchange="storeImg(this, 'neutral')"></div>
+                    <div><label for="img-up">Face UP</label><input type="file" id="img-up" accept="image/*" onchange="storeImg(this, 'up')"></div>
+                    <div><label for="img-down">Face DOWN</label><input type="file" id="img-down" accept="image/*" onchange="storeImg(this, 'down')"></div>
+                    <div><label for="img-left">Face LEFT</label><input type="file" id="img-left" accept="image/*" onchange="storeImg(this, 'left')"></div>
+                    <div><label for="img-right">Face RIGHT</label><input type="file" id="img-right" accept="image/*" onchange="storeImg(this, 'right')"></div>
+                    <div style="grid-column: span 2;"><label for="img-neutral">Face NEUTRAL</label><input type="file" id="img-neutral" accept="image/*" onchange="storeImg(this, 'neutral')"></div>
                 </div>
 
                 <div class="game-board">
                     <div style="text-align: center;">
-                        <h4>You</h4>
                         <div class="player-cam" id="my-cam">Neutral</div>
+                        <p style="margin:5px 0 0 0; font-size:0.85em;">You</p>
                     </div>
-                    <h2>VS</h2>
+                    <h2 style="color:#232e42;">X</h2>
                     <div style="text-align: center;">
-                        <h4>Opponent</h4>
-                        <div class="player-cam" id="opp-cam">Waiting...</div>
+                        <div class="player-cam" id="opp-cam">-</div>
+                        <p style="margin:5px 0 0 0; font-size:0.85em;">Opponent</p>
                     </div>
                 </div>
 
-                <div style="margin-top: 20px; text-align: center;">
+                <div style="margin-top: 15px;">
                     <div class="game-controls">
-                        <div></div>
-                        <button onclick="playMove('up')">⬆️</button>
-                        <div></div>
-                        <button onclick="playMove('left')">⬅️</button>
-                        <button onclick="playMove('neutral')">⏺</button>
-                        <button onclick="playMove('right')">➡️</button>
-                        <div></div>
-                        <button onclick="playMove('down')">⬇️</button>
-                        <div></div>
+                        <div></div><button onclick="playMove('up')">▲</button><div></div>
+                        <button onclick="playMove('left')">◀</button><button onclick="playMove('neutral')">◆</button><button onclick="playMove('right')">▶</button>
+                        <div></div><button onclick="playMove('down')">▼</button><div></div>
                     </div>
-                    <div id="game-status" style="margin-top: 15px; color: #f9e2af;">Round 1 - Waiting for moves</div>
+                    <div id="game-status" style="margin-top: 12px; color: #ffb74d; text-align:center; font-size:0.9em;">Awaiting data packet injection...</div>
                 </div>
             </div>
-
         </div>
     </div>
 
-    <!-- MAIN LOGIC -->
     <script>
-        // --- UI & SECURITY LOGIC ---
         function initPage() {
-            // Ensures cover page is shown on reload
             document.getElementById('cover-page').classList.remove('hidden-default');
             document.getElementById('secret-app').style.display = 'none';
         }
-
         function revealSecret() {
             document.getElementById('cover-page').classList.add('hidden-default');
             document.getElementById('secret-app').style.display = 'flex';
         }
-
         function toggleGame() {
             const gameArea = document.getElementById('game-area');
             gameArea.style.display = gameArea.style.display === 'flex' ? 'none' : 'flex';
         }
 
-        // --- WEBRTC / PEERJS LOGIC ---
-        let peer = null;
-        let connections = []; // For the host
-        let hostConnection = null; // For the client
-        let isHost = false;
-        let username = "Anonymous";
+        let currentRoom = null;
+        const encoder = new TextEncoder();
+        const decoder = new TextDecoder();
 
-        function getUsername() {
-            const val = document.getElementById('username').value.trim();
-            return val ? val : "Anonymous";
-        }
+        async function connectToLiveKit() {
+            const url = document.getElementById('lk-url').value.trim();
+            const token = document.getElementById('lk-token').value.trim();
+            const statusDiv = document.getElementById('connection-status');
 
-        // 1. Host creates a network
-        function hostRoom() {
-            username = getUsername();
-            peer = new Peer(); // Auto-generates a unique ID via PeerJS
+            if(!url || !token) return alert("Credentials required.");
+            statusDiv.innerText = "Connecting...";
             
-            peer.on('open', (id) => {
-                isHost = true;
-                document.getElementById('my-id-display').innerText = "Room ID: " + id;
-                document.getElementById('connection-status').innerText = "Status: Hosting Room";
-            });
+            try {
+                currentRoom = new LivekitClient.Room();
+                currentRoom.on(LivekitClient.RoomEvent.DataReceived, (payload, participant) => {
+                    const data = JSON.parse(decoder.decode(payload));
+                    if(data.type === 'chat') appendMessage(data.sender, data.text);
+                    else if (data.type === 'game') handleOpponentMove(data.move);
+                });
 
-            peer.on('connection', (conn) => {
-                connections.push(conn);
-                setupConnectionListeners(conn);
-            });
+                await currentRoom.connect(url, token);
+                statusDiv.innerText = "Online Streams Linked";
+                appendMessage("System", "Handshake confirmed. Connected to P2P backbone.");
+            } catch (err) {
+                statusDiv.innerText = "Connection Dropped";
+                console.error(err);
+            }
         }
-
-        // 2. Client joins a network
-        function joinRoom() {
-            username = getUsername();
-            const hostId = document.getElementById('join-id').value.trim();
-            if(!hostId) return alert("Enter a Room ID");
-            
-            peer = new Peer();
-            peer.on('open', (id) => {
-                isHost = false;
-                hostConnection = peer.connect(hostId);
-                setupConnectionListeners(hostConnection);
-                document.getElementById('connection-status').innerText = "Status: Connected to Room";
-            });
-        }
-
-        // Handle incoming data
-        function setupConnectionListeners(conn) {
-            conn.on('open', () => {
-                appendMessage("System", `Connected to peer.`);
-            });
-            
-            conn.on('data', (data) => {
-                if(data.type === 'chat') {
-                    appendMessage(data.sender, data.text);
-                    // If host, relay message to other clients
-                    if(isHost) broadcastData(data, conn.peer);
-                }
-                else if (data.type === 'game-move') {
-                    handleOpponentMove(data.move);
-                }
-            });
-        }
-
-        function broadcastData(data, excludePeerId = null) {
-            connections.forEach(conn => {
-                if(conn.peer !== excludePeerId && conn.open) {
-                    conn.send(data);
-                }
-            });
-        }
-
-        // --- CHAT LOGIC ---
-        function handleEnter(e) { if(e.key === 'Enter') sendMessage(); }
 
         function sendMessage() {
             const input = document.getElementById('chat-msg');
             const text = input.value.trim();
-            if(!text) return;
+            if(!text || !currentRoom) return;
 
-            username = getUsername();
-            const packet = { type: 'chat', sender: username, text: text };
-            
+            const name = document.getElementById('username').value.trim() || "Peer";
+            const packet = { type: 'chat', sender: name, text: text };
+            const payload = encoder.encode(JSON.stringify(packet));
+
+            currentRoom.localParticipant.publishData(payload, { reliable: true });
             appendMessage("You", text);
             input.value = '';
-
-            if(isHost) { broadcastData(packet); }
-            else if(hostConnection && hostConnection.open) { hostConnection.send(packet); }
         }
 
         function appendMessage(sender, text) {
@@ -272,10 +185,9 @@
             box.scrollTop = box.scrollHeight;
         }
 
-        // --- SHADOW BOXING GAME LOGIC ---
+        function handleEnter(e) { if(e.key === 'Enter') sendMessage(); }
+
         const userImages = { up: '', down: '', left: '', right: '', neutral: '' };
-        
-        // Read local images and display them
         function storeImg(input, dir) {
             const file = input.files[0];
             if(!file) return;
@@ -292,37 +204,25 @@
             if(userImages[dir]) {
                 cam.style.backgroundImage = `url(${userImages[dir]})`;
                 cam.innerText = '';
-            } else {
-                cam.innerText = dir.toUpperCase();
-                cam.style.backgroundImage = '';
-            }
+            } else { cam.innerText = dir.toUpperCase(); cam.style.backgroundImage = ''; }
         }
-
-        // Game State
-        let currentRound = 1;
 
         function playMove(dir) {
             updateMyCam(dir);
-            // Send move to opponent
-            const packet = { type: 'game-move', move: dir };
-            if(isHost) broadcastData(packet);
-            else if(hostConnection && hostConnection.open) hostConnection.send(packet);
-            
-            document.getElementById('game-status').innerText = `You played ${dir.toUpperCase()}. Waiting for opponent.`;
+            if(!currentRoom) return;
+            const packet = { type: 'game', move: dir };
+            const payload = encoder.encode(JSON.stringify(packet));
+            currentRoom.localParticipant.publishData(payload, { reliable: true });
+            document.getElementById('game-status').innerText = `Vector lock: ${dir.toUpperCase()}`;
         }
 
         function handleOpponentMove(dir) {
             const oppCam = document.getElementById('opp-cam');
-            // We don't have their image, so we show the text/emoji representing where they looked/pointed
-            const arrows = {up: '⬆️', down: '⬇️', left: '⬅️', right: '➡️', neutral: '⏺'};
-            oppCam.innerText = arrows[dir] || dir.toUpperCase();
-            oppCam.style.fontSize = "3em";
-
-            document.getElementById('game-status').innerText = `Opponent played ${dir.toUpperCase()}.`;
-            
-            // Note: Full 3-round sequence verification requires a synchronized state machine 
-            // (e.g., verifying who is Pointing vs Looking, and matching the arrays of previous rounds).
-            // For real-time P2P fluidity, players communicate results in chat.
+            const markers = {up: '▲', down: '▼', left: '◀', right: '▶', neutral: '◆'};
+            oppCam.innerText = markers[dir] || dir.toUpperCase();
+            oppCam.style.fontSize = "2.5em";
+            oppCam.style.color = "#ffb74d";
+            document.getElementById('game-status').innerText = `Opponent directional update: ${dir.toUpperCase()}`;
         }
     </script>
 </body>
