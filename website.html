@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 4: The Renaissance - Study Guide</title>
+    <!-- PeerJS for WebRTC Signaling -->
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    <style>
+        /* --- COVER PAGE STYLES --- */
+        body, html { margin: 0; padding: 0; font-family: 'Times New Roman', serif; height: 100%; background: #fff; }
+        #cover-page { padding: 40px; max-width: 800px; margin: auto; line-height: 1.6; }
+        #cover-page h1 { font-size: 2em; border-bottom: 1px solid #ccc; padding-bottom: 10px; }
+        #cover-page p { font-size: 1.1em; color: #333; }
+        /* The hidden trigger button */
+        #hidden-trigger { 
+            position: fixed; bottom: 0; right: 0; width: 50px; height: 50px; 
+            background: transparent; border: none; cursor: default; z-index: 9999;
+        }
+
+        /* --- SECRET APP STYLES --- */
+        #secret-app { display: none; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #1e1e2e; color: #cdd6f4; height: 100vh; display: flex; flex-direction: column; }
+        
+        .header { background: #11111b; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #313244; }
+        .header h2 { margin: 0; color: #89b4fa; }
+        
+        .main-container { display: flex; flex: 1; overflow: hidden; }
+        
+        /* Setup / Networking Area */
+        .sidebar { width: 300px; background: #181825; padding: 20px; border-right: 1px solid #313244; overflow-y: auto; }
+        .sidebar input, .sidebar button { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 5px; border: none; box-sizing: border-box; }
+        .sidebar input { background: #313244; color: #fff; }
+        .sidebar button { background: #89b4fa; color: #11111b; font-weight: bold; cursor: pointer; }
+        .sidebar button:hover { background: #74c7ec; }
+        .status { margin-bottom: 20px; font-size: 0.9em; color: #a6e3a1; }
+
+        /* Chat Area */
+        .chat-area { flex: 1; display: flex; flex-direction: column; padding: 20px; }
+        .messages { flex: 1; background: #11111b; border-radius: 8px; padding: 15px; overflow-y: auto; margin-bottom: 15px; border: 1px solid #313244; }
+        .message { margin-bottom: 10px; line-height: 1.4; }
+        .message strong { color: #f38ba8; }
+        .chat-input-container { display: flex; gap: 10px; }
+        .chat-input-container input { flex: 1; padding: 12px; border-radius: 5px; border: none; background: #313244; color: #fff; }
+        .chat-input-container button { padding: 12px 25px; border-radius: 5px; border: none; background: #a6e3a1; color: #11111b; font-weight: bold; cursor: pointer; }
+
+        /* Game Area */
+        .game-area { flex: 1; padding: 20px; border-left: 1px solid #313244; display: none; flex-direction: column; }
+        .photo-uploads { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .photo-uploads div { background: #313244; padding: 10px; border-radius: 5px; text-align: center; }
+        .photo-uploads input { display: none; }
+        .photo-uploads label { color: #f9e2af; cursor: pointer; text-decoration: underline; font-size: 0.9em;}
+        .game-board { flex: 1; display: flex; justify-content: center; align-items: center; gap: 40px; }
+        .player-cam { width: 150px; height: 150px; background: #45475a; border-radius: 10px; display: flex; justify-content: center; align-items: center; background-size: cover; background-position: center; }
+        .game-controls { display: grid; grid-template-columns: 50px 50px 50px; gap: 5px; justify-content: center; }
+        .game-controls button { width: 50px; height: 50px; font-size: 1.2em; border-radius: 5px; border: none; background: #89dceb; cursor: pointer; }
+        
+        .hidden-default { display: none !important; }
+    </style>
+</head>
+<body onload="initPage()">
+
+    <!-- 1. THE FAKE COVER PAGE -->
+    <div id="cover-page">
+        <h1>Chapter 4: The Renaissance in Italy</h1>
+        <p>The Renaissance, meaning "rebirth", was a period of European cultural, artistic, political and economic "rebirth" following the Middle Ages. Generally described as taking place from the 14th century to the 17th century, the Renaissance promoted the rediscovery of classical philosophy, literature and art.</p>
+        <p><strong>Assignment:</strong> Read pages 102-145 and complete the worksheet on Leonardo da Vinci's contributions to engineering.</p>
+        <p>Key figures include:</p>
+        <ul>
+            <li>Michelangelo</li>
+            <li>Raphael</li>
+            <li>Donatello</li>
+        </ul>
+        <br><br><br><br><br><br><br><br><br><br>
+        <!-- Click the absolute bottom right corner to open -->
+        <button id="hidden-trigger" onclick="revealSecret()"></button>
+    </div>
+
+    <!-- 2. THE SECRET APP (WebRTC Chat + Game) -->
+    <div id="secret-app" class="hidden-default">
+        <div class="header">
+            <h2>Secure Hub</h2>
+            <button onclick="toggleGame()" style="padding: 8px 15px; background: #cba6f7; border:none; border-radius: 4px; cursor:pointer;">Toggle Shadow Boxing</button>
+        </div>
+        
+        <div class="main-container">
+            <!-- Sidebar: Connection Setup -->
+            <div class="sidebar">
+                <h3>Networking</h3>
+                <input type="text" id="username" placeholder="Your Username">
+                
+                <div style="margin-top: 20px;">
+                    <p style="font-size: 0.8em; color: #a6adc8;">To create a room, click Host. To join a friend, paste their Room ID.</p>
+                    <button onclick="hostRoom()">1. Host a Room</button>
+                    <div class="status" id="my-id-display">Room ID: Not connected</div>
+                    
+                    <hr style="border-color: #313244; margin: 20px 0;">
+                    
+                    <input type="text" id="join-id" placeholder="Paste Room ID here">
+                    <button onclick="joinRoom()" style="background: #a6e3a1;">2. Join Room</button>
+                </div>
+                <div class="status" id="connection-status">Status: Disconnected</div>
+            </div>
+
+            <!-- Chat Area -->
+            <div class="chat-area" id="chat-area">
+                <div class="messages" id="chat-box">
+                    <div class="message"><em>System: Welcome to the private relay. Connection is P2P.</em></div>
+                </div>
+                <div class="chat-input-container">
+                    <input type="text" id="chat-msg" placeholder="Type a message..." onkeypress="handleEnter(event)">
+                    <button onclick="sendMessage()">Send</button>
+                </div>
+            </div>
+
+            <!-- Shadow Boxing Game Area -->
+            <div class="game-area" id="game-area">
+                <h3 style="margin-top:0;">Shadow Boxing (P2P)</h3>
+                <p style="font-size: 0.8em;">Upload your faces. Use buttons to Point/Look.</p>
+                
+                <div class="photo-uploads">
+                    <div><label for="img-up">Upload UP</label><input type="file" id="img-up" accept="image/*" onchange="storeImg(this, 'up')"></div>
+                    <div><label for="img-down">Upload DOWN</label><input type="file" id="img-down" accept="image/*" onchange="storeImg(this, 'down')"></div>
+                    <div><label for="img-left">Upload LEFT</label><input type="file" id="img-left" accept="image/*" onchange="storeImg(this, 'left')"></div>
+                    <div><label for="img-right">Upload RIGHT</label><input type="file" id="img-right" accept="image/*" onchange="storeImg(this, 'right')"></div>
+                    <div style="grid-column: span 2;"><label for="img-neutral">Upload NEUTRAL</label><input type="file" id="img-neutral" accept="image/*" onchange="storeImg(this, 'neutral')"></div>
+                </div>
+
+                <div class="game-board">
+                    <div style="text-align: center;">
+                        <h4>You</h4>
+                        <div class="player-cam" id="my-cam">Neutral</div>
+                    </div>
+                    <h2>VS</h2>
+                    <div style="text-align: center;">
+                        <h4>Opponent</h4>
+                        <div class="player-cam" id="opp-cam">Waiting...</div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 20px; text-align: center;">
+                    <div class="game-controls">
+                        <div></div>
+                        <button onclick="playMove('up')">⬆️</button>
+                        <div></div>
+                        <button onclick="playMove('left')">⬅️</button>
+                        <button onclick="playMove('neutral')">⏺</button>
+                        <button onclick="playMove('right')">➡️</button>
+                        <div></div>
+                        <button onclick="playMove('down')">⬇️</button>
+                        <div></div>
+                    </div>
+                    <div id="game-status" style="margin-top: 15px; color: #f9e2af;">Round 1 - Waiting for moves</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- MAIN LOGIC -->
+    <script>
+        // --- UI & SECURITY LOGIC ---
+        function initPage() {
+            // Ensures cover page is shown on reload
+            document.getElementById('cover-page').classList.remove('hidden-default');
+            document.getElementById('secret-app').style.display = 'none';
+        }
+
+        function revealSecret() {
+            document.getElementById('cover-page').classList.add('hidden-default');
+            document.getElementById('secret-app').style.display = 'flex';
+        }
+
+        function toggleGame() {
+            const gameArea = document.getElementById('game-area');
+            gameArea.style.display = gameArea.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        // --- WEBRTC / PEERJS LOGIC ---
+        let peer = null;
+        let connections = []; // For the host
+        let hostConnection = null; // For the client
+        let isHost = false;
+        let username = "Anonymous";
+
+        function getUsername() {
+            const val = document.getElementById('username').value.trim();
+            return val ? val : "Anonymous";
+        }
+
+        // 1. Host creates a network
+        function hostRoom() {
+            username = getUsername();
+            peer = new Peer(); // Auto-generates a unique ID via PeerJS
+            
+            peer.on('open', (id) => {
+                isHost = true;
+                document.getElementById('my-id-display').innerText = "Room ID: " + id;
+                document.getElementById('connection-status').innerText = "Status: Hosting Room";
+            });
+
+            peer.on('connection', (conn) => {
+                connections.push(conn);
+                setupConnectionListeners(conn);
+            });
+        }
+
+        // 2. Client joins a network
+        function joinRoom() {
+            username = getUsername();
+            const hostId = document.getElementById('join-id').value.trim();
+            if(!hostId) return alert("Enter a Room ID");
+            
+            peer = new Peer();
+            peer.on('open', (id) => {
+                isHost = false;
+                hostConnection = peer.connect(hostId);
+                setupConnectionListeners(hostConnection);
+                document.getElementById('connection-status').innerText = "Status: Connected to Room";
+            });
+        }
+
+        // Handle incoming data
+        function setupConnectionListeners(conn) {
+            conn.on('open', () => {
+                appendMessage("System", `Connected to peer.`);
+            });
+            
+            conn.on('data', (data) => {
+                if(data.type === 'chat') {
+                    appendMessage(data.sender, data.text);
+                    // If host, relay message to other clients
+                    if(isHost) broadcastData(data, conn.peer);
+                }
+                else if (data.type === 'game-move') {
+                    handleOpponentMove(data.move);
+                }
+            });
+        }
+
+        function broadcastData(data, excludePeerId = null) {
+            connections.forEach(conn => {
+                if(conn.peer !== excludePeerId && conn.open) {
+                    conn.send(data);
+                }
+            });
+        }
+
+        // --- CHAT LOGIC ---
+        function handleEnter(e) { if(e.key === 'Enter') sendMessage(); }
+
+        function sendMessage() {
+            const input = document.getElementById('chat-msg');
+            const text = input.value.trim();
+            if(!text) return;
+
+            username = getUsername();
+            const packet = { type: 'chat', sender: username, text: text };
+            
+            appendMessage("You", text);
+            input.value = '';
+
+            if(isHost) { broadcastData(packet); }
+            else if(hostConnection && hostConnection.open) { hostConnection.send(packet); }
+        }
+
+        function appendMessage(sender, text) {
+            const box = document.getElementById('chat-box');
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'message';
+            msgDiv.innerHTML = `<strong>${sender}:</strong> ${text}`;
+            box.appendChild(msgDiv);
+            box.scrollTop = box.scrollHeight;
+        }
+
+        // --- SHADOW BOXING GAME LOGIC ---
+        const userImages = { up: '', down: '', left: '', right: '', neutral: '' };
+        
+        // Read local images and display them
+        function storeImg(input, dir) {
+            const file = input.files[0];
+            if(!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                userImages[dir] = e.target.result;
+                if(dir === 'neutral') updateMyCam('neutral');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function updateMyCam(dir) {
+            const cam = document.getElementById('my-cam');
+            if(userImages[dir]) {
+                cam.style.backgroundImage = `url(${userImages[dir]})`;
+                cam.innerText = '';
+            } else {
+                cam.innerText = dir.toUpperCase();
+                cam.style.backgroundImage = '';
+            }
+        }
+
+        // Game State
+        let currentRound = 1;
+
+        function playMove(dir) {
+            updateMyCam(dir);
+            // Send move to opponent
+            const packet = { type: 'game-move', move: dir };
+            if(isHost) broadcastData(packet);
+            else if(hostConnection && hostConnection.open) hostConnection.send(packet);
+            
+            document.getElementById('game-status').innerText = `You played ${dir.toUpperCase()}. Waiting for opponent.`;
+        }
+
+        function handleOpponentMove(dir) {
+            const oppCam = document.getElementById('opp-cam');
+            // We don't have their image, so we show the text/emoji representing where they looked/pointed
+            const arrows = {up: '⬆️', down: '⬇️', left: '⬅️', right: '➡️', neutral: '⏺'};
+            oppCam.innerText = arrows[dir] || dir.toUpperCase();
+            oppCam.style.fontSize = "3em";
+
+            document.getElementById('game-status').innerText = `Opponent played ${dir.toUpperCase()}.`;
+            
+            // Note: Full 3-round sequence verification requires a synchronized state machine 
+            // (e.g., verifying who is Pointing vs Looking, and matching the arrays of previous rounds).
+            // For real-time P2P fluidity, players communicate results in chat.
+        }
+    </script>
+</body>
+</html>
