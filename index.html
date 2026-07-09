@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Informatik Klasse 9 – Web-Architekturen</title>
-    <!-- LiveKit Official Client SDK via CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/livekit-client/dist/livekit-client.umd.min.js"></script>
     <style>
         /* --- TARNSEITE (DEUTSCHES LERNPORTAL) --- */
         body, html { margin: 0; padding: 0; font-family: Arial, sans-serif; height: 100%; background: #f4f6f9; color: #333; }
@@ -48,13 +46,11 @@
         .player-cam { width: 130px; height: 130px; background: #24283b; border: 1px solid #3b4261; border-radius: 8px; display: flex; justify-content: center; align-items: center; background-size: cover; background-position: center; font-size: 0.85em; color: #565f89; }
         .game-controls { display: grid; grid-template-columns: 45px 45px 45px; gap: 6px; justify-content: center; }
         .game-controls button { width: 45px; height: 45px; font-size: 1.1em; border-radius: 6px; border: none; background: #7aa2f7; cursor: pointer; }
-        
-        .hidden-default { display: none !important; }
     </style>
 </head>
-<body onload="initPage()">
+<body>
 
-    <!-- 1. DIE TARNSEITE (DEUTSCH) -->
+    <!-- 1. DIE TARNSEITE -->
     <div id="cover-page">
         <div class="portal-header">Schulportal-Hessen // Kursmaterialien</div>
         <h1>Informatik 9 - Lektion 3: Statische CDN-Infrastrukturen</h1>
@@ -68,15 +64,14 @@
         <p style="color: #909399; font-size: 0.85em; margin-top: 40px;">Zuletzt aktualisiert von: Fr. Dr. Neumann / System-Administrator</p>
     </div>
 
-    <!-- 2. DIE GEHEIME LIVEKIT INTERFACE -->
-    <div id="secret-app" class="hidden-default">
+    <!-- 2. DIE GEHEIME LIVEKIT APP -->
+    <div id="secret-app">
         <div class="header">
             <h2>Klassenzimmer-Relay (LiveKit)</h2>
             <button onclick="toggleGame()" style="padding: 8px 16px; background: #bb9af3; color:#1a1b26; border:none; border-radius: 6px; cursor:pointer; font-weight:bold;">Schattenboxen einblenden</button>
         </div>
         
         <div class="main-container">
-            <!-- Sidebar Setup -->
             <div class="sidebar">
                 <h3 style="margin:0; font-size:1em; color:#565f89;">Netzwerk-Konfiguration</h3>
                 <input type="text" id="lk-url" placeholder="wss://dein-projekt.livekit.cloud">
@@ -86,7 +81,6 @@
                 <div class="status" id="connection-status">Status: Getrennt</div>
             </div>
 
-            <!-- Chat-Fenster -->
             <div class="chat-area">
                 <div class="messages" id="chat-box">
                     <div class="message"><em>System: Warte auf Netzwerk-Initialisierung...</em></div>
@@ -97,7 +91,6 @@
                 </div>
             </div>
 
-            <!-- Schattenboxen Spielbereich -->
             <div class="game-area" id="game-area">
                 <h3 style="margin-top:0; font-size:1.1em; color:#7aa2f7;">Schattenboxen (Echtzeit)</h3>
                 <div class="photo-uploads">
@@ -132,24 +125,29 @@
         </div>
     </div>
 
-    <!-- LOGIK & SYSTEM STEUERUNG -->
+    <!-- --- SKRIPTE AM ENDE LADEN --- -->
+    <script src="https://cdn.jsdelivr.net/npm/livekit-client/dist/livekit-client.umd.min.js"></script>
+    
     <script>
-        // --- IPAD GESTEN STEUERUNG ---
         let tapCount = 0;
         let tapTimer = null;
+        let currentRoom = null;
+        const encoder = new TextEncoder();
+        const decoder = new TextDecoder();
+        const userImages = { up: '', down: '', left: '', right: '', neutral: '' };
 
         function initPage() {
-            document.getElementById('cover-page').classList.remove('hidden-default');
+            document.getElementById('cover-page').style.display = 'block';
             document.getElementById('secret-app').style.display = 'none';
 
-            // Registriert den geheimen Dreifach-Tap auf dem iPad (überall auf dem Text)
+            // Geste für das iPad: 3x schnell hintereinander auf den Text tippen
             document.getElementById('cover-page').addEventListener('touchstart', function() {
                 tapCount++;
                 clearTimeout(tapTimer);
                 
                 tapTimer = setTimeout(() => {
                     tapCount = 0; 
-                }, 400); // 3 Taps innerhalb von 400 Millisekunden nötig
+                }, 400);
 
                 if (tapCount === 3) {
                     revealSecret();
@@ -159,7 +157,7 @@
         }
 
         function revealSecret() {
-            document.getElementById('cover-page').classList.add('hidden-default');
+            document.getElementById('cover-page').style.display = 'none';
             document.getElementById('secret-app').style.display = 'flex';
         }
 
@@ -168,15 +166,15 @@
             gameArea.style.display = gameArea.style.display === 'flex' ? 'none' : 'flex';
         }
 
-        // --- LIVEKIT MULTIPLAYER ENGINE ---
-        let currentRoom = null;
-        const encoder = new TextEncoder();
-        const decoder = new TextDecoder();
-
+        // --- LIVEKIT ENGINE ---
         async function connectToLiveKit() {
             const url = document.getElementById('lk-url').value.trim();
             const token = document.getElementById('lk-token').value.trim();
             const statusDiv = document.getElementById('connection-status');
+
+            if(typeof LivekitClient === 'undefined') {
+                return alert("Fehler: Das LiveKit-Skript wurde blockiert. Das Schulnetzwerk filtert die Verbindung.");
+            }
 
             if(!url || !token) return alert("Fehlende Logindaten.");
             statusDiv.innerText = "Verbinde...";
@@ -223,8 +221,7 @@
 
         function handleEnter(e) { if(e.key === 'Enter') sendMessage(); }
 
-        // --- SCHATTENBOXEN SPEICHER- ENGINE ---
-        const userImages = { up: '', down: '', left: '', right: '', neutral: '' };
+        // --- GAME MECHANICS ---
         function storeImg(input, dir) {
             const file = input.files[0];
             if(!file) return;
@@ -261,6 +258,8 @@
             oppCam.style.color = "#ff9e64";
             document.getElementById('game-status').innerText = `Gegner hat reagiert: ${dir.toUpperCase()}`;
         }
+
+        initPage();
     </script>
 </body>
 </html>
