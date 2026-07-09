@@ -13,39 +13,44 @@
         .assignment-box { background: #fdf6ec; border-left: 4px solid #e6a23c; padding: 15px; border-radius: 4px; margin: 20px 0; }
         .assignment-box h3 { margin-top: 0; color: #e6a23c; }
         
-        /* --- GEHEIME LIVEKIT APP (DARK THEME) --- */
+        /* --- GEHEIME MULTIUSER APP (DARK THEME) --- */
         #secret-app { display: none; background: #1a1b26; color: #a9b1d6; height: 100vh; flex-direction: column; font-family: 'Segoe UI', sans-serif; }
         .header { background: #16161e; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #3b4261; }
         .header h2 { margin: 0; color: #7aa2f7; font-size: 1.2em; }
         .main-container { display: flex; flex: 1; overflow: hidden; }
         
-        /* Sidebar Control */
-        .sidebar { width: 280px; background: #1f2335; padding: 20px; border-right: 1px solid #3b4261; display: flex; flex-direction: column; gap: 12px; }
-        .sidebar input, .sidebar button { width: 100%; padding: 12px; border-radius: 6px; border: none; box-sizing: border-box; font-size: 0.9em; }
-        .sidebar input { background: #24283b; color: #fff; border: 1px solid #3b4261; }
+        /* Sidebar Controls */
+        .sidebar { width: 280px; background: #1f2335; padding: 20px; border-right: 1px solid #3b4261; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; }
+        .sidebar input, .sidebar button, .sidebar select { width: 100%; padding: 12px; border-radius: 6px; border: none; box-sizing: border-box; font-size: 0.9em; }
+        .sidebar input, .sidebar select { background: #24283b; color: #fff; border: 1px solid #3b4261; }
         .sidebar button { background: #7aa2f7; color: #1a1b26; font-weight: bold; cursor: pointer; }
         .sidebar button:hover { background: #89ddff; }
         .status { font-size: 0.85em; color: #9ece6a; text-align: center; }
+        
+        .user-list-box { background: #16161e; border: 1px solid #3b4261; border-radius: 6px; padding: 10px; flex: 1; min-height: 100px; }
+        .user-item { font-size: 0.85em; padding: 4px 8px; margin-bottom: 4px; background: #24283b; border-radius: 4px; border-left: 3px solid #9ece6a; }
 
         /* Chat-Bereich */
         .chat-area { flex: 1; display: flex; flex-direction: column; padding: 20px; background: #16161e; }
         .messages { flex: 1; background: #1a1b26; border-radius: 8px; padding: 15px; overflow-y: auto; margin-bottom: 15px; border: 1px solid #3b4261; }
-        .message { margin-bottom: 10px; font-size: 0.95em; }
-        .message strong { color: #ff9e64; }
-        .chat-input-container { display: flex; gap: 10px; }
+        .message { margin-bottom: 10px; font-size: 0.95em; line-height: 1.4; }
+        .msg-global { border-left: 3px solid #7aa2f7; padding-left: 6px; }
+        .msg-pn { border-left: 3px solid #bb9af3; padding-left: 6px; background: rgba(187, 154, 243, 0.05); }
+        
+        .chat-input-container { display: flex; gap: 10px; align-items: center; }
         .chat-input-container input { flex: 1; padding: 14px; border-radius: 6px; border: 1px solid #3b4261; background: #1a1b26; color: #fff; }
-        .chat-input-container button { padding: 0 25px; border-radius: 6px; border: none; background: #9ece6a; color: #1a1b26; font-weight: bold; cursor: pointer; }
+        .chat-input-container button { padding: 0 25px; height: 46px; border-radius: 6px; border: none; background: #9ece6a; color: #1a1b26; font-weight: bold; cursor: pointer; }
 
         /* Spiel-Bereich (Schattenboxen) */
-        .game-area { flex: 1; padding: 20px; border-left: 1px solid #3b4261; display: none; flex-direction: column; background: #1f2335; }
-        .photo-uploads { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px; }
-        .photo-uploads div { background: #24283b; padding: 8px; border-radius: 4px; text-align: center; border: 1px solid #3b4261; }
+        .game-area { flex: 1; padding: 20px; border-left: 1px solid #3b4261; display: none; flex-direction: column; background: #1f2335; max-width: 380px; }
+        .photo-uploads { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 10px; }
+        .photo-uploads div { background: #24283b; padding: 6px; border-radius: 4px; text-align: center; border: 1px solid #3b4261; }
         .photo-uploads input { display: none; }
-        .photo-uploads label { color: #ff9e64; cursor: pointer; font-size: 0.8em; text-decoration: underline; }
-        .game-board { flex: 1; display: flex; justify-content: center; align-items: center; gap: 30px; }
-        .player-cam { width: 130px; height: 130px; background: #24283b; border: 1px solid #3b4261; border-radius: 8px; display: flex; justify-content: center; align-items: center; background-size: cover; background-position: center; font-size: 0.85em; color: #565f89; }
-        .game-controls { display: grid; grid-template-columns: 45px 45px 45px; gap: 6px; justify-content: center; }
-        .game-controls button { width: 45px; height: 45px; font-size: 1.1em; border-radius: 6px; border: none; background: #7aa2f7; cursor: pointer; }
+        .photo-uploads label { color: #ff9e64; cursor: pointer; font-size: 0.75em; text-decoration: underline; }
+        .game-board { flex: 1; display: flex; justify-content: center; align-items: center; gap: 20px; min-height: 160px; }
+        .player-cam { width: 110px; height: 110px; background: #24283b; border: 1px solid #3b4261; border-radius: 8px; display: flex; justify-content: center; align-items: center; background-size: cover; background-position: center; font-size: 0.8em; color: #565f89; font-weight: bold; }
+        .game-controls { display: grid; grid-template-columns: 40px 40px 40px; gap: 6px; justify-content: center; }
+        .game-controls button { width: 40px; height: 40px; font-size: 1em; border-radius: 6px; border: none; background: #7aa2f7; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -64,176 +69,322 @@
         <p style="color: #909399; font-size: 0.85em; margin-top: 40px;">Zuletzt aktualisiert von: Fr. Dr. Neumann / System-Administrator</p>
     </div>
 
-    <!-- 2. DIE GEHEIME LIVEKIT APP -->
+    <!-- 2. DIE GEHEIME NETWORK APP -->
     <div id="secret-app">
         <div class="header">
-            <h2>Klassenzimmer-Relay (LiveKit)</h2>
-            <button onclick="toggleGame()" style="padding: 8px 16px; background: #bb9af3; color:#1a1b26; border:none; border-radius: 6px; cursor:pointer; font-weight:bold;">Schattenboxen einblenden</button>
+            <h2>Klassennetzwerk (General & Private)</h2>
+            <button onclick="toggleGame()" style="padding: 8px 16px; background: #bb9af3; color:#1a1b26; border:none; border-radius: 6px; cursor:pointer; font-weight:bold;">Schattenboxen</button>
         </div>
         
         <div class="main-container">
             <div class="sidebar">
-                <h3 style="margin:0; font-size:1em; color:#565f89;">Netzwerk-Konfiguration</h3>
-                <input type="text" id="lk-url" placeholder="wss://dein-projekt.livekit.cloud">
-                <input type="text" id="lk-token" placeholder="LiveKit Token einfügen">
-                <input type="text" id="username" placeholder="Dein Username/Name">
-                <button onclick="connectToLiveKit()">Verbindung herstellen</button>
+                <h3 style="margin:0; font-size:0.95em; color:#7aa2f7;">Konfiguration</h3>
+                <input type="text" id="username" placeholder="Dein Name (z.B. Max)">
+                <input type="text" id="room-name" placeholder="Raum-Code (z.B. Info9B)" value="Info9">
+                <button onclick="connectToNetwork()">Raum betreten</button>
                 <div class="status" id="connection-status">Status: Getrennt</div>
+                
+                <h3 style="margin:10px 0 0 0; font-size:0.95em; color:#565f89;">Aktive Schüler im Raum</h3>
+                <div class="user-list-box" id="user-list">
+                    <em style="font-size:0.8em; color:#565f89;">Niemand online...</em>
+                </div>
             </div>
 
             <div class="chat-area">
                 <div class="messages" id="chat-box">
-                    <div class="message"><em>System: Warte auf Netzwerk-Initialisierung...</em></div>
+                    <div class="message"><em>System: Gib einen Namen ein und betrete einen Raum, um loszuschreiben!</em></div>
                 </div>
+                
                 <div class="chat-input-container">
+                    <select id="chat-target" style="width: auto; max-width: 150px; background:#24283b; color:#fff; border:1px solid #3b4261; height:46px; border-radius:6px; padding:0 10px;">
+                        <option value="general">📢 Alle (General)</option>
+                    </select>
                     <input type="text" id="chat-msg" placeholder="Nachricht schreiben..." onkeypress="handleEnter(event)">
-                    <button onclick="sendMessage()">Senden</button>
+                    <button onclick="sendChatMessage()">Senden</button>
                 </div>
             </div>
 
             <div class="game-area" id="game-area">
-                <h3 style="margin-top:0; font-size:1.1em; color:#7aa2f7;">Schattenboxen (Echtzeit)</h3>
+                <h3 style="margin-top:0; font-size:1em; color:#7aa2f7;">1v1 Schattenboxen</h3>
+                
+                <select id="game-target" style="background:#24283b; color:#fff; border:1px solid #3b4261; padding:8px; border-radius:6px; margin-bottom:10px; width:100%;">
+                    <option value="">-- Gegner auswählen --</option>
+                </select>
+
                 <div class="photo-uploads">
-                    <div><label for="img-up">Bild HOCH</label><input type="file" id="img-up" accept="image/*" onchange="storeImg(this, 'up')"></div>
-                    <div><label for="img-down">Bild RUNTER</label><input type="file" id="img-down" accept="image/*" onchange="storeImg(this, 'down')"></div>
-                    <div><label for="img-left">Bild LINKS</label><input type="file" id="img-left" accept="image/*" onchange="storeImg(this, 'left')"></div>
-                    <div><label for="img-right">Bild RECHTS</label><input type="file" id="img-right" accept="image/*" onchange="storeImg(this, 'right')"></div>
-                    <div style="grid-column: span 2;"><label for="img-neutral">Bild NEUTRAL</label><input type="file" id="img-neutral" accept="image/*" onchange="storeImg(this, 'neutral')"></div>
+                    <div><label for="img-up">Bild ▲</label><input type="file" id="img-up" accept="image/*" onchange="storeImg(this, 'up')"></div>
+                    <div><label for="img-down">Bild ▼</label><input type="file" id="img-down" accept="image/*" onchange="storeImg(this, 'down')"></div>
+                    <div><label for="img-left">Bild ◀</label><input type="file" id="img-left" accept="image/*" onchange="storeImg(this, 'left')"></div>
+                    <div><label for="img-right">Bild ▶</label><input type="file" id="img-right" accept="image/*" onchange="storeImg(this, 'right')"></div>
+                    <div style="grid-column: span 2;"><label for="img-neutral">Bild STANDBY</label><input type="file" id="img-neutral" accept="image/*" onchange="storeImg(this, 'neutral')"></div>
                 </div>
 
                 <div class="game-board">
                     <div style="text-align: center;">
-                        <div class="player-cam" id="my-cam">Neutral</div>
-                        <p style="margin:5px 0 0 0; font-size:0.8em;">Du</p>
+                        <div class="player-cam" id="my-cam">Standby</div>
+                        <p style="margin:5px 0 0 0; font-size:0.75em;">Du</p>
                     </div>
-                    <h2 style="color:#3b4261;">VS</h2>
+                    <h3 style="color:#3b4261; margin:0;">VS</h3>
                     <div style="text-align: center;">
-                        <div class="player-cam" id="opp-cam">-</div>
-                        <p style="margin:5px 0 0 0; font-size:0.8em;">Gegner</p>
+                        <div class="player-cam" id="opp-cam">Warte...</div>
+                        <p style="margin:5px 0 0 0; font-size:0.75em;" id="opp-name">Gegner</p>
                     </div>
                 </div>
 
-                <div style="margin-top: 15px;">
+                <div style="margin-top: 10px;">
                     <div class="game-controls">
                         <div></div><button onclick="playMove('up')">▲</button><div></div>
                         <button onclick="playMove('left')">◀</button><button onclick="playMove('neutral')">◆</button><button onclick="playMove('right')">▶</button>
                         <div></div><button onclick="playMove('down')">▼</button><div></div>
                     </div>
-                    <div id="game-status" style="margin-top: 12px; color: #ff9e64; text-align:center; font-size:0.85em;">Bereit für Runde 1.</div>
+                    <div id="game-status" style="margin-top: 8px; color: #ff9e64; text-align:center; font-size:0.8em;">Gegner wählen & feuern!</div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- --- SKRIPTE AM ENDE LADEN --- -->
-    <script src="https://cdn.jsdelivr.net/npm/livekit-client/dist/livekit-client.umd.min.js"></script>
+    <!-- --- PLUG-AND-PLAY-NETZWERK-BIBLIOTHEK (STRENG ÖFFENTLICHES PROTOKOLL) --- -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js"></script>
     
     <script>
         let tapCount = 0;
         let tapTimer = null;
-        let currentRoom = null;
-        const encoder = new TextEncoder();
-        const decoder = new TextDecoder();
+        
+        let mqttClient = null;
+        let myName = "";
+        let roomName = "";
+        let activeUsers = {}; // Speichert Online-User und Zeitstempel
         const userImages = { up: '', down: '', left: '', right: '', neutral: '' };
 
+        // 1. GESTEN-DETEKTION
         function initPage() {
             document.getElementById('cover-page').style.display = 'block';
             document.getElementById('secret-app').style.display = 'none';
 
-            // Geste für das iPad: 3x schnell hintereinander auf den Text tippen
             document.getElementById('cover-page').addEventListener('touchstart', function() {
                 tapCount++;
                 clearTimeout(tapTimer);
-                
-                tapTimer = setTimeout(() => {
-                    tapCount = 0; 
-                }, 400);
+                tapTimer = setTimeout(() => { tapCount = 0; }, 400);
 
                 if (tapCount === 3) {
-                    revealSecret();
+                    document.getElementById('cover-page').style.display = 'none';
+                    document.getElementById('secret-app').style.display = 'flex';
                     tapCount = 0;
                 }
             });
         }
 
-        function revealSecret() {
-            document.getElementById('cover-page').style.display = 'none';
-            document.getElementById('secret-app').style.display = 'flex';
+        // 2. LÄUFT ÜBER EMQX ÖFFENTLICHEN CLOUD-BROKER (WSS PORT FÜR IPAD SAFARI)
+        function connectToNetwork() {
+            myName = document.getElementById('username').value.trim().replace(/[^a-zA-Z0-9]/g, "");
+            roomName = document.getElementById('room-name').value.trim().replace(/[^a-zA-Z0-9]/g, "");
+            
+            if(!myName || !roomName) return alert("Bitte Namen und Raum-Code eingeben!");
+            
+            document.getElementById('connection-status').innerText = "Verbinde...";
+            
+            const randomId = "client_" + Math.random().toString(36).substring(2, 10);
+            mqttClient = new Paho.MQTT.Client("broker.emqx.io", 8084, "/mqtt", randomId);
+            
+            mqttClient.onConnectionLost = (resp) => {
+                document.getElementById('connection-status').innerText = "Getrennt!";
+                console.log("Verbindung weg:", resp.errorMessage);
+            };
+            
+            mqttClient.onMessageArrived = (message) => {
+                const topic = message.destinationName;
+                const payload = JSON.parse(message.payloadString);
+                
+                // Ignoriere eigene Nachrichten im System
+                if (payload.sender === myName && topic.includes("/presence")) return;
+
+                // A: Präsenz-Signale der anderen verarbeiten
+                if (topic.endsWith("/presence")) {
+                    activeUsers[payload.sender] = Date.now();
+                    updateUserDropdowns();
+                    return;
+                }
+
+                // B: General Chat empfangen
+                if (topic.endsWith("/general")) {
+                    appendMessage("general", payload.sender, payload.text);
+                } 
+                // C: Private Nachrichten empfangen
+                else if (topic.includes("/pn/")) {
+                    appendMessage("pn", payload.sender, payload.text);
+                }
+                // D: Match-Spieldaten empfangen
+                else if (topic.includes("/game/")) {
+                    handleOpponentMove(payload.move, payload.imageData, payload.sender);
+                }
+            };
+
+            mqttClient.connect({
+                useSSL: true,
+                onSuccess: () => {
+                    document.getElementById('connection-status').innerText = "Im Raum: " + roomName;
+                    
+                    // Kanäle abonnieren
+                    mqttClient.subscribe(`relay/${roomName}/general`);
+                    mqttClient.subscribe(`relay/${roomName}/presence`);
+                    mqttClient.subscribe(`relay/${roomName}/pn/${myName}`);
+                    mqttClient.subscribe(`relay/${roomName}/game/${myName}`);
+                    
+                    // Herzschlag starten (meldet dich an alle an)
+                    startHeartbeat();
+                    appendMessage("sys", "System", `Erfolgreich eingeloggt als [${myName}].`);
+                },
+                onFailure: (err) => {
+                    document.getElementById('connection-status').innerText = "Fehler!";
+                    alert("Netzwerk blockiert oder überlastet: " + err.errorMessage);
+                }
+            });
         }
 
+        // 3. PRÄSENZ & LISTE AKTUALISIEREN
+        function startHeartbeat() {
+            sendPing();
+            setInterval(sendPing, 3000); // Alle 3 Sek Bescheid sagen
+
+            // Tote User aussortieren (Timeout nach 8 Sekunden)
+            setInterval(() => {
+                const now = Date.now();
+                let changed = false;
+                for (let user in activeUsers) {
+                    if (now - activeUsers[user] > 8000) {
+                        delete activeUsers[user];
+                        changed = true;
+                    }
+                }
+                if(changed) updateUserDropdowns();
+            }, 4000);
+        }
+
+        function sendPing() {
+            if(!mqttClient || !mqttClient.isConnected()) return;
+            const msg = new Paho.MQTT.Message(JSON.stringify({ sender: myName }));
+            msg.destinationName = `relay/${roomName}/presence`;
+            mqttClient.send(msg);
+        }
+
+        function updateUserDropdowns() {
+            const listDiv = document.getElementById('user-list');
+            const chatTarget = document.getElementById('chat-target');
+            const gameTarget = document.getElementById('game-target');
+            
+            const lastChatSel = chatTarget.value;
+            const lastGameSel = gameTarget.value;
+            
+            // Sidebar-Liste neu bauen
+            listDiv.innerHTML = "";
+            chatTarget.innerHTML = '<option value="general">📢 Alle (General)</option>';
+            gameTarget.innerHTML = '<option value="">-- Gegner auswählen --</option>';
+            
+            let count = 0;
+            for (let user in activeUsers) {
+                count++;
+                // Sidebar Text
+                const item = document.createElement('div');
+                item.className = 'user-item';
+                item.innerText = user;
+                listDiv.appendChild(item);
+                
+                // Chat-Auswahl-Option
+                const opt1 = document.createElement('option');
+                opt1.value = user;
+                opt1.innerText = "🔒 PN: " + user;
+                chatTarget.appendChild(opt1);
+                
+                // Game-Auswahl-Option
+                const opt2 = document.createElement('option');
+                opt2.value = user;
+                opt2.innerText = user;
+                gameTarget.appendChild(opt2);
+            }
+            
+            if(count === 0) listDiv.innerHTML = '<em style="font-size:0.8em; color:#565f89;">Niemand online...</em>';
+            
+            // Selektionen versuchen zu behalten
+            if (chatTarget.querySelector(`option[value="${lastChatSel}"]`)) chatTarget.value = lastChatSel;
+            if (gameTarget.querySelector(`option[value="${lastGameSel}"]`)) gameTarget.value = lastGameSel;
+        }
+
+        // 4. MESSAGE SYSTEM (GENERAL CHAT & PN)
+        function sendChatMessage() {
+            const input = document.getElementById('chat-msg');
+            const text = input.value.trim();
+            const target = document.getElementById('chat-target').value;
+            
+            if(!text || !mqttClient || !mqttClient.isConnected()) return;
+
+            const packet = { sender: myName, text: text };
+            const msg = new Paho.MQTT.Message(JSON.stringify(packet));
+
+            if (target === "general") {
+                msg.destinationName = `relay/${roomName}/general`;
+                mqttClient.send(msg);
+            } else {
+                // Sende exklusiv auf dem privaten Kanal des Empfängers
+                msg.destinationName = `relay/${roomName}/pn/${target}`;
+                mqttClient.send(msg);
+                // PN lokal selbst anzeigen, da man seinen eigenen PN-Kanal nicht abhört
+                appendMessage("pn-out", target, text);
+            }
+            input.value = '';
+        }
+
+        function appendMessage(type, sender, text) {
+            const box = document.getElementById('chat-box');
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'message';
+            
+            if (type === "general") {
+                msgDiv.className += " msg-global";
+                msgDiv.innerHTML = `<strong style="color:#7aa2f7;">[GLOBAL] ${sender}:</strong> ${text}`;
+            } else if (type === "pn") {
+                msgDiv.className += " msg-pn";
+                msgDiv.innerHTML = `<strong style="color:#bb9af3;">[PN von ${sender}]:</strong> ${text}`;
+            } else if (type === "pn-out") {
+                msgDiv.className += " msg-pn";
+                msgDiv.innerHTML = `<strong style="color:#a9b1d6;">[PN an ${sender}]:</strong> ${text}`;
+            } else {
+                msgDiv.innerHTML = `<span style="color:#565f89;"><em>${text}</em></span>`;
+            }
+            
+            box.appendChild(msgDiv);
+            box.scrollTop = box.scrollHeight;
+        }
+
+        function handleEnter(e) { if(e.key === 'Enter') sendChatMessage(); }
         function toggleGame() {
             const gameArea = document.getElementById('game-area');
             gameArea.style.display = gameArea.style.display === 'flex' ? 'none' : 'flex';
         }
 
-        // --- LIVEKIT ENGINE ---
-        async function connectToLiveKit() {
-            const url = document.getElementById('lk-url').value.trim();
-            const token = document.getElementById('lk-token').value.trim();
-            const statusDiv = document.getElementById('connection-status');
-
-            if(typeof LivekitClient === 'undefined') {
-                return alert("Fehler: Das LiveKit-Skript wurde blockiert. Das Schulnetzwerk filtert die Verbindung.");
-            }
-
-            if(!url || !token) return alert("Fehlende Logindaten.");
-            statusDiv.innerText = "Verbinde...";
-            
-            try {
-                currentRoom = new LivekitClient.Room();
-                currentRoom.on(LivekitClient.RoomEvent.DataReceived, (payload, participant) => {
-                    const data = JSON.parse(decoder.decode(payload));
-                    if(data.type === 'chat') appendMessage(data.sender, data.text);
-                    else if (data.type === 'game') handleOpponentMove(data.move);
-                });
-
-                await currentRoom.connect(url, token);
-                statusDiv.innerText = "Status: Verbunden";
-                appendMessage("System", "Verbindung zum Server-Backbone steht.");
-            } catch (err) {
-                statusDiv.innerText = "Fehler!";
-                console.error(err);
-            }
-        }
-
-        function sendMessage() {
-            const input = document.getElementById('chat-msg');
-            const text = input.value.trim();
-            if(!text || !currentRoom) return;
-
-            const name = document.getElementById('username').value.trim() || "Spieler";
-            const packet = { type: 'chat', sender: name, text: text };
-            const payload = encoder.encode(JSON.stringify(packet));
-
-            currentRoom.localParticipant.publishData(payload, { reliable: true });
-            appendMessage("Du", text);
-            input.value = '';
-        }
-
-        function appendMessage(sender, text) {
-            const box = document.getElementById('chat-box');
-            const msgDiv = document.createElement('div');
-            msgDiv.className = 'message';
-            msgDiv.innerHTML = `<strong>${sender}:</strong> ${text}`;
-            box.appendChild(msgDiv);
-            box.scrollTop = box.scrollHeight;
-        }
-
-        function handleEnter(e) { if(e.key === 'Enter') sendMessage(); }
-
-        // --- GAME MECHANICS ---
+        // 5. SCHATTENBOXEN (AUTOMATISCHE HD-BILD-KOMPRIMIERUNG GEGEN SERVER-BLOCKE)
         function storeImg(input, dir) {
             const file = input.files[0];
             if(!file) return;
             const reader = new FileReader();
             reader.onload = (e) => {
-                userImages[dir] = e.target.result;
-                if(dir === 'neutral') updateMyCam('neutral');
+                const img = new Image();
+                img.onload = () => {
+                    // iPad-Kamera-Fotos kleinrechnen (150x150), um die Datenleitung nicht zu verstopfen
+                    const canvas = document.createElement('canvas');
+                    canvas.width = 150;
+                    canvas.height = 150;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, 150, 150);
+                    
+                    userImages[dir] = canvas.toDataURL('image/jpeg', 0.6); // Geringe Dateigröße
+                    if(dir === 'neutral') updateLocalCam('neutral');
+                };
+                img.src = e.target.result;
             };
             reader.readAsDataURL(file);
         }
 
-        function updateMyCam(dir) {
+        function updateLocalCam(dir) {
             const cam = document.getElementById('my-cam');
             if(userImages[dir]) {
                 cam.style.backgroundImage = `url(${userImages[dir]})`;
@@ -242,21 +393,46 @@
         }
 
         function playMove(dir) {
-            updateMyCam(dir);
-            if(!currentRoom) return;
-            const packet = { type: 'game', move: dir };
-            const payload = encoder.encode(JSON.stringify(packet));
-            currentRoom.localParticipant.publishData(payload, { reliable: true });
-            document.getElementById('game-status').innerText = `Richtung gesendet: ${dir.toUpperCase()}`;
+            updateLocalCam(dir);
+            const opponent = document.getElementById('game-target').value;
+            
+            if(!opponent) {
+                document.getElementById('game-status').innerText = "Fehler: Wähle erst einen Gegner!";
+                return;
+            }
+            if(!mqttClient || !mqttClient.isConnected()) return;
+
+            document.getElementById('game-status').innerText = `Gesendet: ${dir.toUpperCase()}`;
+
+            const packet = {
+                sender: myName,
+                move: dir,
+                imageData: userImages[dir]
+            };
+            const msg = new Paho.MQTT.Message(JSON.stringify(packet));
+            msg.destinationName = `relay/${roomName}/game/${opponent}`;
+            mqttClient.send(msg);
         }
 
-        function handleOpponentMove(dir) {
+        function handleOpponentMove(dir, oppImgData, senderName) {
+            const activeOpponent = document.getElementById('game-target').value;
+            // Nur anzeigen, wenn die Daten von dem Spieler stammen, den du gerade ausgewählt hast
+            if (senderName !== activeOpponent) return;
+
+            document.getElementById('opp-name').innerText = senderName;
             const oppCam = document.getElementById('opp-cam');
-            const markers = {up: '▲', down: '▼', left: '◀', right: '▶', neutral: '◆'};
-            oppCam.innerText = markers[dir] || dir.toUpperCase();
-            oppCam.style.fontSize = "2.2em";
-            oppCam.style.color = "#ff9e64";
-            document.getElementById('game-status').innerText = `Gegner hat reagiert: ${dir.toUpperCase()}`;
+            
+            if(oppImgData) {
+                oppCam.style.backgroundImage = `url(${oppImgData})`;
+                oppCam.innerText = '';
+            } else {
+                const markers = {up: '▲', down: '▼', left: '◀', right: '▶', neutral: '◆'};
+                oppCam.style.backgroundImage = '';
+                oppCam.innerText = markers[dir] || dir.toUpperCase();
+                oppCam.style.fontSize = "1.8em";
+                oppCam.style.color = "#ff9e64";
+            }
+            document.getElementById('game-status').innerText = `${senderName} macht: ${dir.toUpperCase()}`;
         }
 
         initPage();
