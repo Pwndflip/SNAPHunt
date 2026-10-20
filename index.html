@@ -79,6 +79,7 @@ body.alm #edge{opacity:0!important}
 #lg{display:flex;font-size:clamp(44px,15vw,72px);font-weight:900;letter-spacing:-2px}
 #lg span{display:inline-block;opacity:0;transform:translateY(60px) scale(.3) rotate(-12deg);animation:pp .6s cubic-bezier(.3,1.8,.5,1) forwards}@keyframes pp{to{opacity:1;transform:none}}
 #sl{position:absolute;bottom:max(40px,env(safe-area-inset-bottom));left:24px;right:24px;height:64px;border-radius:32px;background:#0002;display:flex;align-items:center;justify-content:center;font-weight:800;padding-left:40px}
+#sf{position:absolute;left:0;top:0;bottom:0;width:0;border-radius:32px;background:#fff;pointer-events:none}#sl span{position:relative}
 #kn{position:absolute;left:6px;top:6px;width:52px;height:52px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:24px;touch-action:none;box-shadow:0 2px 8px #0003}
 #sp i{position:absolute;left:50%;top:45%;width:10px;height:10px;border-radius:50%;animation:sk .9s ease-out forwards}@keyframes sk{to{transform:translate(var(--x),var(--y)) scale(0);opacity:0}}
 .leaflet-container{font:inherit;background:#f6f2e3}.leaflet-control-attribution{font-size:9px;opacity:.7}
@@ -89,7 +90,7 @@ body.alm #edge{opacity:0!important}
 @media (prefers-reduced-motion:reduce){.mk .av{animation:none}.logo,.logo .lt{animation:none!important}}
 </style></head><body>
 
-<div id="sp"><div id="lg"></div><div id="sl"><span>Wischen, und die Jagd beginnt!</span><b id="kn">➜</b></div></div>
+<div id="sp"><div id="lg"></div><div id="sl"><div id="sf"></div><span>Wischen, und die Jagd beginnt!</span><b id="kn">➜</b></div></div>
 <div id="edge"></div><div id="alarm"></div>
 
 <div id="home" class="s on">
@@ -165,7 +166,7 @@ let off=0,con=0;const now=()=>Date.now()+off;
 onValue(ref(db,'.info/serverTimeOffset'),s=>off=s.val()||0);onValue(ref(db,'.info/connected'),s=>con=s.val());
 const ready=()=>new Promise((ok,no)=>{let t=0;const i=setInterval(()=>{if(con){clearInterval(i);ok()}else if(++t>40){clearInterval(i);toast('Keine Verbindung zur Datenbank. Prüfe databaseURL und Regeln.',7000);no()}},200)});
 
-let me={n:ls('n')||'',ic:ls('ic')||'',bg:ls('bg')||COL[0],team:0,mem:''},host=0,code='',S=null,G=null,had=0,HD=0,hk=0,hk2=0,pos=null,lastSend=0,sn=null,subs=[],MK={},LV={},gm,sm,sc,zc,zn,wid,iv,wl,ac,tw,bgA,lc,LR,LK=0,DM={};
+let me={n:ls('n')||'',ic:ls('ic')||'',bg:ls('bg')||COL[0],team:0,mem:''},host=0,code='',S=null,G=null,had=0,HD=0,hk=0,hk2=0,pos=null,lastSend=0,sn=null,subs=[],MK={},LV={},gm,sm,sc,zc,zn,wid,iv,wl,ac,tw,bgA,lc,LR,LK=0,DM={},FC;
 const R=p=>ref(db,'g/'+code+(p?'/'+p:'')),Pf=k=>R('p/'+k);
 
 /* ===== Sound ===== */
@@ -236,10 +237,10 @@ function alm(on){$('#alarm').classList.toggle('on',!!on);document.body.classList
 'SnapHunt'.split('').forEach((c,i)=>{const s=document.createElement('span');s.textContent=c;s.style.animationDelay=i*.09+'s';$('#lg').append(s)});
 function spark(n){for(let i=0;i<n;i++){const e=document.createElement('i'),a=Math.random()*6.28,d=80+Math.random()*130;e.style.cssText=`--x:${Math.cos(a)*d}px;--y:${Math.sin(a)*d}px;background:${i%2?'#fff':'#1d1c18'}`;$('#sp').append(e);setTimeout(()=>e.remove(),900)}}
 setTimeout(()=>{snd(260,800);spark(18)},650);
-{const kn=$('#kn'),sl=$('#sl');let dx=0,sx=0;const mx=()=>sl.clientWidth-64;
-kn.onpointerdown=e=>{kn.setPointerCapture(e.pointerId);sx=e.clientX-dx;kn.style.transition='none'};
-kn.onpointermove=e=>{if(!kn.hasPointerCapture(e.pointerId))return;dx=Math.max(0,Math.min(mx(),e.clientX-sx));kn.style.transform=`translateX(${dx}px)`};
-kn.onpointerup=()=>{kn.style.transition='transform .3s';if(dx>mx()-24){kn.style.transform=`translateX(${mx()}px)`;snd(400,1300,.3);spark(26);$('#sp').classList.add('out');setTimeout(()=>$('#sp').remove(),800)}else{dx=0;kn.style.transform=''}}}
+{const kn=$('#kn'),sl=$('#sl'),sf=$('#sf');let dx=0,sx=0;const mx=()=>sl.clientWidth-64;
+kn.onpointerdown=e=>{kn.setPointerCapture(e.pointerId);sx=e.clientX-dx;kn.style.transition='none';sf.style.transition='none'};
+kn.onpointermove=e=>{if(!kn.hasPointerCapture(e.pointerId))return;dx=Math.max(0,Math.min(mx(),e.clientX-sx));kn.style.transform=`translateX(${dx}px)`;sf.style.width=dx+58+'px'};
+kn.onpointerup=()=>{kn.style.transition='transform .3s';sf.style.transition='width .3s';if(dx>mx()-24){kn.style.transform=`translateX(${mx()}px)`;sf.style.width=sl.clientWidth+'px';snd(400,1300,.3);spark(26);$('#sp').classList.add('out');setTimeout(()=>$('#sp').remove(),800)}else{dx=0;kn.style.transform='';sf.style.width='0px'}}}
 
 /* ===== Logo-Animation auf dem Startbildschirm ===== */
 {const L0=$('#hl'),b=document.createElement('b');
@@ -330,7 +331,7 @@ function begin(){const c=S.cfg;G={my:S.p[id].tm,cap:0,st2:0,dl:0,w:{},k:0,over:0
  /* Quests & Punkte nur für SnapRunner */
  $('#qb').hidden=G.my!='r';$('#pt').style.visibility=G.my=='r'?'':'hidden';
  $('#cl').innerHTML='';$$('.ovl').forEach(o=>o.classList.remove('on'));
- if(gm){gm.remove();gm=null}MK={};LV={};zn=null;
+ if(gm){gm.remove();gm=null}MK={};LV={};zn=null;FC=null;
  gm=L.map('gmap',{zoomControl:false});gm.attributionControl.setPrefix(false);gm.fitBounds(L.latLng(c.c).toBounds(c.z*1.3));L.tileLayer(TL,{maxZoom:19,attribution:TA}).addTo(gm);
  zc=L.circle(c.c,{radius:c.z/2,color:'#E9A800',weight:3,fillColor:'#FFD43B',fillOpacity:.07,interactive:false}).addTo(gm);
  const cr=ref(db,'c/'+code+'/'+G.my);window._cr=cr;subs.push(onChildAdded(cr,s=>addC(s.val())));
@@ -373,13 +374,13 @@ function setSt(a){const e=$('#st');[...e.children].forEach((c,i)=>{if(i>=a.lengt
  alm(al);
  /* Quests nur für SnapRunner */
  const fl=G.my=='r'&&S.q&&S.q.fl,pk=G.my=='r'&&S.q&&S.q.pk;
- if(fl&&live&&dist([fl.la,fl.ln],pos)<30){G.cap=G.cap||n;const l=6e4-(n-G.cap);s.push('📡 Signalturm halten: '+Math.ceil(l/1e3)+' s');
+ if(fl&&live&&dist([fl.la,fl.ln],pos)<50){G.cap=G.cap||n;const l=6e4-(n-G.cap);s.push('📡 Signalturm halten: '+Math.ceil(l/1e3)+' s');
   if(l<=0){G.cap=0;runTransaction(R('q/fl'),v=>v&&v.la==fl.la?rp(c.c,rd(now())*.8):undefined).then(x=>{if(x.committed){pts(id,5);ev('qf',{n:me.n})}})}}else G.cap=0;
  if(pk&&live){const car=pk.car;
   if(!car&&dist(pk.a,pos)<25)runTransaction(R('q/pk/car'),v=>v?undefined:{id,n:me.n}).then(x=>x.committed&&ev('pc',{n:me.n}));
   else if(car&&car.id==id){s.push('📦 Bring das Paket zur 🏁!');if(dist(pk.b,pos)<25&&!G.dl){G.dl=1;pts(id,20);update(R('q'),{pk:null,pkn:n+18e4});ev('pd',{n:me.n})}}
   else if(car){const cp=S.p[car.id];if(cp&&cp.la&&dist([cp.la,cp.ln],pos)<20){G.st2=G.st2||n;const l=6e4-(n-G.st2);s.push('📦 Paket klauen: '+Math.ceil(l/1e3)+' s');
-    if(l<=0){G.st2=0;runTransaction(R('q/pk/car'),v=>v&&v.id==car.id?{id,n:me.n}:undefined).then(x=>x.committed&&ev('ps',{n:me.n,f:car.n}))}}else G.st2=0}}
+    if(l<=0){G.st2=0;runTransaction(R('q/pk'),v=>{if(!v||!v.car||v.car.id!=car.id)return;let b;for(let i=0;i<12;i++){const q=rp(c.c,rd(now())*.8);b=[q.la,q.ln];if(dist(b,pos)>200)break}return{...v,car:{id,n:me.n},b}}).then(x=>x.committed&&ev('ps',{n:me.n,f:car.n}))}}else G.st2=0}}
  else{G.dl=0;G.st2=0}
  if(m.out)s.push('Du bist raus – du schaust zu');
  setSt(s);
@@ -395,7 +396,8 @@ function marks(n,pk,fl){const W={},add=(k,la,ln,h,cls,tag)=>W[k]={la,ln,h,cls,ta
   if(n<exp)pg.L.forEach(x=>{const k='p'+x.id+'_'+pg.ts,p=P[x.id];if(DM[k]||!p||p.out||x.id==id)return;add(k,x.la,x.ln,av(p),'pn','vor '+mmss(n-pg.ts))})}
  if(sn&&n<sn.u&&P[sn.k]&&P[sn.k].la)add('sn',P[sn.k].la,P[sn.k].ln,av(P[sn.k]),'live','verpetzt');
  if(fl)add('fl',fl.la,fl.ln,'<span class="av">📡</span>','obj');
- if(pk){if(!pk.car)add('pa',pk.a[0],pk.a[1],'<span class="av">📦</span>','obj');add('pb',pk.b[0],pk.b[1],'<span class="av">🏁</span>','obj');
+ if(fl){if(!FC)FC=L.circle([fl.la,fl.ln],{radius:50,color:'#E9A800',weight:3,fillColor:'#FFD43B',fillOpacity:.2,interactive:false}).addTo(gm);else FC.setLatLng([fl.la,fl.ln])}else if(FC){FC.remove();FC=null}
+ if(pk){if(!pk.car)add('pa',pk.a[0],pk.a[1],'<span class="av">📦</span>','obj');if(!pk.car||pk.car.id==id)add('pb',pk.b[0],pk.b[1],'<span class="av">🏁</span>','obj');
   if(pk.car&&pk.car.id!=id&&P[pk.car.id]&&P[pk.car.id].la)add('c',P[pk.car.id].la,P[pk.car.id].ln,'<span class="av">📦</span>','pk',pk.car.n)}
  Object.keys(MK).forEach(k=>{if(k!='me'&&!W[k]){MK[k].remove();delete MK[k]}});
  Object.entries(W).forEach(([k,w])=>{const h=`<div class="mk ${w.cls}">${w.h}${w.tag?`<b class="ag">${esc(w.tag)}</b>`:''}</div>`,kk=w.cls+w.h+(w.tag?1:0),i=()=>L.divIcon({className:'',html:h,iconSize:[38,38],iconAnchor:[19,19]});let x=MK[k];
@@ -424,9 +426,9 @@ function fights(n){const F=S.f||{},e=Object.entries(F);
 const US=[['hid','🫥 Untergetaucht',10,'Du bleibst beim nächsten Ping unsichtbar.'],['sn','🗣️ Verpetzen',20,'Du siehst 20 s lang einen zufälligen Gegner live.'],['xp','⚡ Sofort-Ping',15,'Löst sofort einen Ping der Gegenseite aus.']];
 function quests(){if(G.my!='r')return;const m=S.p[id]||{},p=m.pts||0,q=S.q||{},pk=q.pk,n=now(),near=Object.entries(S.p).filter(([k,x])=>k!=id&&x.tm=='r'&&!x.out&&x.la&&pos&&dist([x.la,x.ln],pos)<40&&!Object.values(S.f||{}).some(f=>f.a==k||f.b==k));
  $('#qc').innerHTML=`<p class="hint" style="margin-bottom:8px">Deine Punkte: <b>⭐ ${p}</b></p>
- <div class="card"><b>📡 Signalturm · +5</b><p>${q.fl?'Bleib 1 Minute im Umkreis von 30 m des Turms auf der Karte.':'…'}</p></div>
+ <div class="card"><b>📡 Signalturm · +5</b><p>${q.fl?'Bleib 1 Minute im Kreis (50 m) um den Turm auf der Karte.':'…'}</p></div>
  <div class="card"><b>⚔️ Duell · ±10</b><p>${near.length?'Fordere ein Team in 40 m Nähe heraus (Schere-Stein-Papier).':'Niemand in 40 m Nähe.'}</p>${near.map(([k,x])=>`<button class="b duel" data-k="${k}">${esc(x.n)}</button>`).join('')}</div>
- <div class="card"><b>📦 Paket · +20</b><p>${pk?(pk.car?pk.car.n+' trägt das Paket. Bleib 1 Minute in 20 m Nähe, um es zu klauen.':'Hol das Paket bei 📦 und bring es zur 🏁 (ca. 5 Min Fahrt).'):'Das nächste Paket erscheint bald.'}</p></div>
+ <div class="card"><b>📦 Paket · +20</b><p>${pk?(pk.car?pk.car.n+' trägt das Paket. Bleib 1 Minute in 20 m Nähe, um es zu klauen. Du bekommst dann dein eigenes Ziel 🏁.':'Hol das Paket bei 📦 und bring es zur 🏁 (ca. 5 Min Fahrt).'):'Das nächste Paket erscheint bald.'}</p></div>
  <h2 style="margin:14px 0 8px">Items</h2>`+US.map(([i,l,c,d])=>`<div class="card"><b>${l} · −${c}</b><p>${d}</p><button class="b p use" data-i="${i}" ${p<c?'disabled':''}>Einsetzen</button></div>`).join('');
  $$('.duel').forEach(b=>b.onclick=()=>{const k=b.dataset.k;set(R('f/'+id+'_'+k),{a:id,b:k,an:me.n,bn:S.p[k].n,ts:now()});$('#qs').classList.remove('on')});
  $$('.use').forEach(b=>b.onclick=()=>use(b.dataset.i))}
@@ -454,6 +456,6 @@ function endGame(){G.over=1;stopGeo();tmr(0);alm(0);bgOff();lock(0);try{wl&&wl.r
 $('#ob').onclick=()=>reset();
 function reset(){const c=code,s=S;subs.forEach(u=>{try{u()}catch(e){}});subs=[];tmr(0);alm(0);bgOff();lock(0);stopGeo();try{wl&&wl.release()}catch(e){}
  if(c&&s&&s.s=='lobby'){try{host?remove(ref(db,'g/'+c)):remove(ref(db,'g/'+c+'/p/'+id))}catch(e){}}
- code='';S=null;G=null;had=0;HD=0;host=0;pos=null;sn=null;MK={};DM={};edge('x');show('home')}
+ code='';S=null;G=null;had=0;HD=0;host=0;pos=null;sn=null;MK={};DM={};FC=null;edge('x');show('home')}
 </script>
 </body></html>
