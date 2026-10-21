@@ -25,115 +25,92 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Feste Änderungen anwenden
+      - name: Codegenerierung korrigieren
+        shell: bash
         run: |
           python <<'PY'
           from pathlib import Path
+          import re
 
           path = Path("index.html")
           if not path.exists():
               raise SystemExit("FEHLER: index.html nicht gefunden.")
 
           html = path.read_text(encoding="utf-8")
-          original = html
 
-          # Nur einmal ausführen; erneute Starts bleiben sicher.
-          marker = "/* SNAPHUNT_FIXED_UPDATE_V1 */"
-          if marker not in html:
-              css = """
-          /* SNAPHUNT_FIXED_UPDATE_V1 */
-          input, textarea, select {
-            box-sizing: border-box;
-            min-width: 0;
-            max-width: 100%;
-          }
-          #nm, #mem, #ic, #cd, #ci {
-            flex-shrink: 0;
-            font-size: 17px;
-          }
-          .logo.sc {
-            animation-duration: 1.2s;
-          }
-          @keyframes lsc {
-            0%, 100% { transform: none; }
-            50% { transform: scale(1.06); }
-          }
-          .logo.wv .lt {
-            animation-duration: 0.45s;
-          }
-          #lg span {
-            animation-duration: 0.45s;
-          }
-          #sp {
-            transition-duration: 0.55s;
-          }
-          @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
-              animation-duration: 0.01ms !important;
-              animation-iteration-count: 1 !important;
-              transition-duration: 0.01ms !important;
-            }
-          }
-          """
+          pattern = re.compile(
+              r"/\*GEN\*/.*?/\*ENDGEN\*/",
+              re.DOTALL
+          )
 
-              if "</style>" not in html:
-                  raise SystemExit("FEHLER: CSS-Ende nicht gefunden.")
-              html = html.replace("</style>", css + "\n</style>", 1)
-
-          # Fünf Spezialcodes mit jeweils genau 5 % Chance.
-          start = "/*GEN*/"
-          end = "/*ENDGEN*/"
-          if start not in html or end not in html:
-              raise SystemExit("FEHLER: Codegenerator nicht gefunden.")
-
-          a = html.index(start)
-          b = html.index(end, a) + len(end)
-          generator = """/*GEN*/
-          const AL='ABCDEFGHJKLMNPQRSTUVWXYZ23456789',
-                rc=n=>Array.from({length:n},()=>AL[Math.random()*32|0]).join('');
+          replacement = r"""/*GEN*/
+          const AL='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+          const rc=n=>{
+            let s='';
+            do {
+              s=Array.from(
+                {length:n},
+                ()=>AL[Math.random()*AL.length|0]
+              ).join('');
+            } while(s.includes('67')||s.includes('69'));
+            return s;
+          };
           const gen=()=>{
             const r=Math.random()*100;
-            if(r<5)return'6767';
-            if(r<10)return'6969';
-            if(r<15)return'EMIR';
-            if(r<20)return'EYMN';
-            if(r<25)return'SNAP';
-            if(r<31.7)return Math.random()<.5?'67'+rc(2):rc(2)+'67';
-            if(r<38.6)return Math.random()<.5?'69'+rc(2):rc(2)+'69';
+            let t=0;
+            const hit=p=>(t+=p)>r;
+            if(hit(.67))return '6767';
+            if(hit(10))return 'EMIR';
+            if(hit(5))return 'EYMN';
+            if(hit(3))return 'SNAP';
             return rc(4);
           };
           /*ENDGEN*/"""
-          html = html[:a] + generator + html[b:]
 
-          # Footer-Text vereinheitlichen.
+          html, count = pattern.subn(
+              lambda _: replacement,
+              html,
+              count=1
+          )
+
+          if count != 1:
+              raise SystemExit(
+                  "FEHLER: Codegenerator-Marker fehlen "
+                  "oder sind nicht eindeutig."
+              )
+
+          # Footer an allen vorhandenen Stellen aktualisieren.
           html = html.replace(
               "Made by Emir with hard work💔",
               "Made by Emir mit harter Arbeit."
           )
 
-          if html == original:
-              print("Keine neuen Änderungen erforderlich.")
-          else:
-              path.write_text(html, encoding="utf-8")
-              print("index.html wurde aktualisiert.")
+          # Sicherheitsprüfungen
+          match = pattern.search(html)
+          if not match:
+              raise SystemExit("FEHLER: Generator fehlt nach dem Update.")
 
-          # Sicherheitsprüfungen: wichtige Anker müssen erhalten sein.
-          updated = path.read_text(encoding="utf-8")
+          generator = match.group()
           for required in (
-              "/* SNAPHUNT_FIXED_UPDATE_V1 */",
-              "/*GEN*/",
-              "/*ENDGEN*/",
-              "const gen=()=>",
-              "initializeApp",
-              "firebase-database.js",
-              "Made by Emir mit harter Arbeit."
+              "if(hit(.67))return '6767'",
+              "return 'EMIR'",
+              "return 'EYMN'",
+              "return 'SNAP'",
+              "s.includes('67')",
+              "s.includes('69')"
           ):
-              if required not in updated:
-                  raise SystemExit(f"Prüfung fehlgeschlagen: {required}")
+              if required not in generator:
+                  raise SystemExit(
+                      f"Prüfung fehlgeschlagen: {required}"
+                  )
 
-          if updated.count("/* SNAPHUNT_FIXED_UPDATE_V1 */") != 1:
-              raise SystemExit("Update-Marker ist nicht eindeutig.")
-          print("Alle Prüfungen bestanden.")
+          if "return '6969'" in generator:
+              raise SystemExit("FEHLER: 6969 ist noch enthalten.")
+
+          path.write_text(html, encoding="utf-8")
+          print("Codegenerator erfolgreich aktualisiert.")
+          print("6767: 0,67 %; Namen bleiben erhalten.")
+          print("Zufallscodes mit 67 oder 69 werden verworfen.")
           PY
 
       - name: Änderungen als Pull Request bereitstellen
@@ -142,14 +119,14 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: automation/snaphunt-fixed-update
           delete-branch: false
-          commit-message: "Update SnapHunt UI and special codes"
-          title: "SnapHunt: feste UI- und Code-Updates"
+          commit-message: "Fix SnapHunt special code probabilities"
+          title: "SnapHunt: Spezialcodes korrigieren"
           body: |
-            Automatisch erstellte Änderungen:
-            - Eingabefelder stabilisieren
-            - Logo- und Intro-Animationen dezenter machen
-            - Spezialcodes auf jeweils 5 % setzen
-            - Footer-Text vereinheitlichen
+            Änderungen:
+            - 6767 hat eine Wahrscheinlichkeit von 0,67 %.
+            - 6969 wird nicht mehr als Spezialcode generiert.
+            - Zufallscodes mit 67 oder 69 werden verworfen.
+            - EMIR, EYMN und SNAP bleiben erhalten.
+            - Footer-Text wird auf Deutsch gesetzt.
 
             Bitte vor dem Merge testen.
-          labels: automated
