@@ -1,0 +1,155 @@
+
+name: SnapHunt – Feste Updates
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: snaphunt-fixed-update
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Repository auschecken
+        uses: actions/checkout@v4
+
+      - name: Python vorbereiten
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Feste Änderungen anwenden
+        run: |
+          python <<'PY'
+          from pathlib import Path
+
+          path = Path("index.html")
+          if not path.exists():
+              raise SystemExit("FEHLER: index.html nicht gefunden.")
+
+          html = path.read_text(encoding="utf-8")
+          original = html
+
+          # Nur einmal ausführen; erneute Starts bleiben sicher.
+          marker = "/* SNAPHUNT_FIXED_UPDATE_V1 */"
+          if marker not in html:
+              css = """
+          /* SNAPHUNT_FIXED_UPDATE_V1 */
+          input, textarea, select {
+            box-sizing: border-box;
+            min-width: 0;
+            max-width: 100%;
+          }
+          #nm, #mem, #ic, #cd, #ci {
+            flex-shrink: 0;
+            font-size: 17px;
+          }
+          .logo.sc {
+            animation-duration: 1.2s;
+          }
+          @keyframes lsc {
+            0%, 100% { transform: none; }
+            50% { transform: scale(1.06); }
+          }
+          .logo.wv .lt {
+            animation-duration: 0.45s;
+          }
+          #lg span {
+            animation-duration: 0.45s;
+          }
+          #sp {
+            transition-duration: 0.55s;
+          }
+          @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+              animation-duration: 0.01ms !important;
+              animation-iteration-count: 1 !important;
+              transition-duration: 0.01ms !important;
+            }
+          }
+          """
+
+              if "</style>" not in html:
+                  raise SystemExit("FEHLER: CSS-Ende nicht gefunden.")
+              html = html.replace("</style>", css + "\n</style>", 1)
+
+          # Fünf Spezialcodes mit jeweils genau 5 % Chance.
+          start = "/*GEN*/"
+          end = "/*ENDGEN*/"
+          if start not in html or end not in html:
+              raise SystemExit("FEHLER: Codegenerator nicht gefunden.")
+
+          a = html.index(start)
+          b = html.index(end, a) + len(end)
+          generator = """/*GEN*/
+          const AL='ABCDEFGHJKLMNPQRSTUVWXYZ23456789',
+                rc=n=>Array.from({length:n},()=>AL[Math.random()*32|0]).join('');
+          const gen=()=>{
+            const r=Math.random()*100;
+            if(r<5)return'6767';
+            if(r<10)return'6969';
+            if(r<15)return'EMIR';
+            if(r<20)return'EYMN';
+            if(r<25)return'SNAP';
+            if(r<31.7)return Math.random()<.5?'67'+rc(2):rc(2)+'67';
+            if(r<38.6)return Math.random()<.5?'69'+rc(2):rc(2)+'69';
+            return rc(4);
+          };
+          /*ENDGEN*/"""
+          html = html[:a] + generator + html[b:]
+
+          # Footer-Text vereinheitlichen.
+          html = html.replace(
+              "Made by Emir with hard work💔",
+              "Made by Emir mit harter Arbeit."
+          )
+
+          if html == original:
+              print("Keine neuen Änderungen erforderlich.")
+          else:
+              path.write_text(html, encoding="utf-8")
+              print("index.html wurde aktualisiert.")
+
+          # Sicherheitsprüfungen: wichtige Anker müssen erhalten sein.
+          updated = path.read_text(encoding="utf-8")
+          for required in (
+              "/* SNAPHUNT_FIXED_UPDATE_V1 */",
+              "/*GEN*/",
+              "/*ENDGEN*/",
+              "const gen=()=>",
+              "initializeApp",
+              "firebase-database.js",
+              "Made by Emir mit harter Arbeit."
+          ):
+              if required not in updated:
+                  raise SystemExit(f"Prüfung fehlgeschlagen: {required}")
+
+          if updated.count("/* SNAPHUNT_FIXED_UPDATE_V1 */") != 1:
+              raise SystemExit("Update-Marker ist nicht eindeutig.")
+          print("Alle Prüfungen bestanden.")
+          PY
+
+      - name: Änderungen als Pull Request bereitstellen
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: automation/snaphunt-fixed-update
+          delete-branch: false
+          commit-message: "Update SnapHunt UI and special codes"
+          title: "SnapHunt: feste UI- und Code-Updates"
+          body: |
+            Automatisch erstellte Änderungen:
+            - Eingabefelder stabilisieren
+            - Logo- und Intro-Animationen dezenter machen
+            - Spezialcodes auf jeweils 5 % setzen
+            - Footer-Text vereinheitlichen
+
+            Bitte vor dem Merge testen.
+          labels: automated
