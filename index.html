@@ -144,7 +144,7 @@ select {
  <button class="b p" id="mk">Spiel erstellen</button>
  <div class="or">oder mit Code beitreten</div>
  <div class="row"><div class="cdw" id="cdw"><span class="ct"></span><span class="ct"></span><span class="ct"></span><span class="ct"></span><input id="cd" maxlength="4" autocapitalize="characters" autocomplete="off" autocorrect="off" spellcheck="false" aria-label="Spielcode"></div><button class="b" id="jn">Beitreten</button></div>
- <div class="ft">Made by Emir with hard work💔</div>
+ <div class="ft">Made by Emir mit harter Arbeit.</div>
 </div>
 
 <div id="setup" class="s np">
@@ -152,7 +152,7 @@ select {
  <div class="mw"><div id="smap"></div><i class="dot"></i></div>
  <div class="sheet"><p class="hint">Karte verschieben, um die Zone zu platzieren.</p><div id="sg"></div>
   <label class="chk"><input type="checkbox" id="sh" checked> Zone schrumpft im Spielverlauf</label><div id="ssw"></div>
-  <button class="b p" id="open" style="margin-top:8px">Lobby öffnen</button><div class="ft">Made by Emir with hard work💔</div></div>
+  <button class="b p" id="open" style="margin-top:8px">Lobby öffnen</button><div class="ft">Made by Emir mit harter Arbeit.</div></div>
 </div>
 
 <div id="lobby" class="s">
@@ -163,7 +163,7 @@ select {
  <div class="seg" id="seg"><button data-r="h">SnapHunter</button><button data-r="r">SnapRunner</button><button data-r="x">Zufall</button></div>
  <div class="grow" id="tag"></div><p id="why" class="hint" style="text-align:center"></p>
  <button class="b p" id="go" hidden>Los geht's</button><button class="b p" id="rdy" hidden>Bereit</button>
- <div class="ft">Made by Emir with hard work💔</div>
+ <div class="ft">Made by Emir mit harter Arbeit.</div>
 </div>
 
 <div id="game" class="s np"><div id="gmap"></div>
@@ -176,7 +176,7 @@ select {
  <div class="ovl" id="chat"><div class="top" style="padding:max(10px,env(safe-area-inset-top)) 0 8px"><h2 style="flex:1">Team-Funk</h2><button class="ic" id="cx">✕</button></div><div id="cl"></div><form id="cf"><input id="ci" maxlength="200" placeholder="Nachricht" autocomplete="off"><button class="b p">Senden</button></form></div>
 </div>
 
-<div id="over" class="s"><div class="grow"></div><h1 id="oh"></h1><p id="od" class="sub"></p><div id="ol"></div><div class="grow"></div><button class="b p" id="ob">Zurück zum Start</button><div class="ft">Made by Emir with hard work💔</div></div>
+<div id="over" class="s"><div class="grow"></div><h1 id="oh"></h1><p id="od" class="sub"></p><div id="ol"></div><div class="grow"></div><button class="b p" id="ob">Zurück zum Start</button><div class="ft">Made by Emir mit harter Arbeit.</div></div>
 <div id="toast"></div>
 <div id="pop" hidden><div id="pc"></div></div><div id="wp" hidden></div>
 
@@ -274,10 +274,27 @@ const av=(p,s)=>{const b=p.bg||'#FFD43B',t=p.ic||'?',n=[...t].length;return`<spa
 const ev=(t,o)=>push(R('ev'),{t,ts:now(),...o});
 const pts=(k,d)=>runTransaction(Pf(k+'/pts'),v=>Math.max(0,(v||0)+d));
 /*GEN*/
-const AL='ABCDEFGHJKLMNPQRSTUVWXYZ23456789',rc=n=>Array.from({length:n},()=>AL[Math.random()*32|0]).join('');
-const gen=()=>{const r=Math.random()*100;let t=0;const hit=p=>(t+=p)>r;
- if(hit(.67))return'6767';if(hit(.67))return'6969';if(hit(10))return'EMIR';if(hit(5))return'EYMN';if(hit(3))return'SNAP';
- if(hit(6.7))return Math.random()<.5?'67'+rc(2):rc(2)+'67';if(hit(6.9))return Math.random()<.5?'69'+rc(2):rc(2)+'69';return rc(4)};
+const AL='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+const rc=n=>{
+  let s='';
+  do {
+    s=Array.from(
+      {length:n},
+      ()=>AL[Math.random()*AL.length|0]
+    ).join('');
+  } while(s.includes('67')||s.includes('69'));
+  return s;
+};
+const gen=()=>{
+  const r=Math.random()*100;
+  let t=0;
+  const hit=p=>(t+=p)>r;
+  if(hit(.67))return '6767';
+  if(hit(10))return 'EMIR';
+  if(hit(5))return 'EYMN';
+  if(hit(3))return 'SNAP';
+  return rc(4);
+};
 /*ENDGEN*/
 /* Code gilt nur als belegt, solange das Spiel nicht beendet und jünger als 8 h ist */
 const taken=async c=>{const s=await get(ref(db,'g/'+c));if(!s.exists())return false;const v=s.val();return v.s!='end'&&!!v.ct&&now()-v.ct<288e5};
